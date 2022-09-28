@@ -35,6 +35,9 @@ export const logAdminReducer = createSlice({
     showLogin: (state, payload) => {
       state.showLogin = payload.payload;
     },
+    whosLogged: (state, payload) => {
+      state.nameValue = payload.payload;
+    },
   },
 });
 
@@ -48,9 +51,11 @@ export const {
   customerLogoutFront,
   customerLogoutBack,
   showLogin,
+  whosLogged
 } = logAdminReducer.actions;
 export const selectAdminLogStatus = (state) => state.admin.logAdminValue;
 export const selectCustomerLogStatus = (state) => state.admin.logCustomerValue;
 export const selectShowLogin = (state) => state.admin.showLogin;
+export const selectWhosConnected = (state) => state.admin.nameValue;
 
 export default logAdminReducer.reducer;

@@ -10,6 +10,7 @@ router.get("/login-status", (req, res, next) => {
 });
 router.post("/login-status/login", (req, res, next) => {
   Users.find({}, function (err, result) {
+    
     if (
       result[0].adminUserName === req.body.username &&
       result[0].adminPassword === req.body.password
@@ -18,7 +19,7 @@ router.post("/login-status/login", (req, res, next) => {
         { adminLogged: false },
         { $set: { adminLogged: "true" } }
       )
-        .then((data) => res.json(data))
+        .then((data) => res.json(data) )
         .catch(next);
     } else if (
       result.some((e) => 

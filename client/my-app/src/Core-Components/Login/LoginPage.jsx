@@ -9,14 +9,19 @@ import {
   customerLoginFront,
   selectAdminLogStatus,
   selectCustomerLogStatus,
-  showLogin
+  showLogin,
+  whosLogged,
+  selectWhosConnected
 } from "../../Redux/logAdminReducer";
 
 const Login = () => {
   const dispatch = useDispatch();
   const isAdminLogged = useSelector(selectAdminLogStatus);
   const isCustomerLogged = useSelector(selectCustomerLogStatus);
+  const whoConnected = useSelector(selectWhosConnected);
+
   const [username, setUsername] = useState("");
+  const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [checkCustomerUsername, setCheckCustomerUsername] = useState(false);
   const [checkCustomerPassword, setCheckCustomerPassword] = useState(false);
@@ -68,6 +73,9 @@ const Login = () => {
 
   useEffect(() => {
     getLogStatus();
+    // console.log(whoConnected);
+    // isAdminLogged ? setUser(whoConnected) : dispatch(whosLogged(""))
+    // isCustomerLogged ? dispatch(whosLogged(`${username}`)) : dispatch(whosLogged(""))
     console.log(isAdminLogged+"adminlogged")
     console.log(isCustomerLogged+"customerlogged");
   }, [isAdminLogged,isCustomerLogged,counter]);
@@ -95,6 +103,7 @@ const Login = () => {
       <div className="sign-up-log">
         <h6>Don't have an account?</h6>
         <button className="login-btn" onClick={()=>dispatch(showLogin(false))}>SIGN UP</button>
+        {/* <div>{whoConnected}</div> */}
       </div>
     </div>
   );

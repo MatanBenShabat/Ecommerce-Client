@@ -4,6 +4,9 @@ const ProductstScheme = mongoose.Schema({
     image: String,
     productsName: String,
     price:Number,
+    currentBid:Number,
+    user:String,
+    winner:String
     // required: true
   }
 });
