@@ -1,22 +1,37 @@
 import axios from "axios";
-import { useState } from "react";
 import { useSelector } from "react-redux";
+import { useMutation } from "react-query";
 
 import "./products.css";
 import { selectCustomerLogStatus } from "../../Redux/logAdminReducer";
-const Product = ({ item }) => {
-  const [bidValue, setBidValue] = useState(item.currentBid);
+import { useRef } from "react";
+
+const Product = ({ item, getProducts }) => {
+  const ref = useRef();
+
+  const mutation = useMutation(
+    (newBid) => {
+      return axios.patch(
+        `http://localhost:5000/api-products/products/${item._id}`,
+        {
+          currentBid: newBid,
+        }
+      );
+    },
+    { onSuccess: getProducts }
+  );
+
 
   const isCustomerLogged = useSelector(selectCustomerLogStatus);
 
-  const bid = () => {
-    axios.patch(`http://localhost:5000/api-products/products/${item._id}`, {
-      currentBid: bidValue
-    });
-  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const changedBid = ref.current.value;
+    
+    if(changedBid === "") return;
 
-  const handleChange = (e) => {
-    setBidValue(e.target.value);
+    mutation.mutate(ref.current.value);
+    ref.current.value = null;
   };
 
   return (
@@ -26,10 +41,13 @@ const Product = ({ item }) => {
       <h2>Price:{item.price}$</h2>
       <h2>Current Bid:{item.currentBid}$</h2>
       {isCustomerLogged ? (
-        <div className="bid-container">
-          <input placeholder="Place Bid..." onChange={handleChange} />
-          <button onClick={bid}>Bid</button>
-        </div>
+        <form className="bid-container" onSubmit={handleSubmit}>
+          <input placeholder="Place Bid..." type="number" min={(item.currentBid + 5)} ref={ref} />
+          <button>Bid</button>
+          {mutation.isLoading && <h4>Loading...</h4>}
+          {mutation.isSuccess && <h4>Your bid was placed successfully</h4>}
+          {mutation.isSuccess && <h4>New bid is : {item.currentBid}$</h4>}
+        </form>
       ) : null}
     </li>
   );

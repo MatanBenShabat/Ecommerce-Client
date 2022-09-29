@@ -3,107 +3,53 @@ import "./login-page.css";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  adminLoginBack,
-  customerLoginBack,
-  adminLoginFront,
-  customerLoginFront,
-  selectAdminLogStatus,
-  selectCustomerLogStatus,
-  showLogin,
-  whosLogged,
-  selectWhosConnected
-} from "../../Redux/logAdminReducer";
+  isAdminSelector,
+  isRegisteredSelector,
+  setIsRegistered,
+  userNameSelector,
+} from "../../store/loginSlice";
+import { useRef } from "react";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const isAdminLogged = useSelector(selectAdminLogStatus);
-  const isCustomerLogged = useSelector(selectCustomerLogStatus);
-  const whoConnected = useSelector(selectWhosConnected);
+  const isAdmin = useSelector(isAdminSelector);
+  const isRegistered = useSelector(isRegisteredSelector);
+  const userName = useSelector(userNameSelector);
 
-  const [username, setUsername] = useState("");
-  const [user, setUser] = useState("");
-  const [password, setPassword] = useState("");
-  const [checkCustomerUsername, setCheckCustomerUsername] = useState(false);
-  const [checkCustomerPassword, setCheckCustomerPassword] = useState(false);
-  const [checkAdminUsername, setCheckAdminUsername] = useState(false);
-  const [checkAdminPassword, setCheckAdminPassword] = useState(false);
-  const [counter, setCounter] = useState(0);
+  const userNameRef = useRef();
+  const passwordRef = useRef();
 
-  const postLoginDetailsBack = () => {
+  const handleLogin = (e) => {
+    e.preventDFefault();
     axios
-      .post("http://localhost:5000/api-login-status/login-status/login", {
-        username: username,
-        password: password,
+      .post("http://localhost:5000/api-users/users/login", {
+        username: userNameRef.current.value,
+        password: passwordRef.current.value,
       })
       .then((res) => {});
   };
 
-  const getLogStatus = () => {
-    axios
-      .get("http://localhost:5000/api-login-status/login-status")
-      .then((res) => {
-        res.data[0].adminLogged === true && dispatch(adminLoginBack(true));
-        res.data[1].customerLogged === true && dispatch(customerLoginBack(true)); 
-      });
-  };
-
-  const checkLoginDetailsFront = () => {
-    axios.get("http://localhost:5000/api-users/users").then((res) => {
-      for (let i = 1; i < res.data.length; i++) {
-        if(res.data[i].customerUserName === username) {setCheckCustomerUsername(true)};
-        if(res.data[i].customerPassword === password) { setCheckCustomerPassword(true)};
-      }
-        if(res.data[0].adminUserName === username) { setCheckAdminUsername(true) };
-        if(res.data[0].adminPassword === password)  {setCheckAdminPassword(true)};
-
-      checkAdminUsername &&
-        checkAdminPassword &&
-        dispatch(adminLoginFront(true));
-      checkCustomerUsername &&
-        checkCustomerPassword &&
-        dispatch(customerLoginFront(true));
-    });
-  };
-  const authorize = () => {
-    postLoginDetailsBack();
-    checkLoginDetailsFront();
-    getLogStatus();
-    setTimeout( setCounter(counter+1),5000)
-  };
-
-  useEffect(() => {
-    getLogStatus();
-    // console.log(whoConnected);
-    // isAdminLogged ? setUser(whoConnected) : dispatch(whosLogged(""))
-    // isCustomerLogged ? dispatch(whosLogged(`${username}`)) : dispatch(whosLogged(""))
-    console.log(isAdminLogged+"adminlogged")
-    console.log(isCustomerLogged+"customerlogged");
-  }, [isAdminLogged,isCustomerLogged,counter]);
   return (
     <div className="login-container">
-      <div className="login-header">
-        <h1 className="login-h1">Login</h1>
-      </div>
-      <div className="login-fieldes">
-        <input
-          className="log-input"
-          placeholder="Username"
-          onChange={(e) => setUsername(e.target.value)}
-        ></input>
+      <h1 className="login-h1">Login</h1>
+      <form className="login-fieldes" onSubmit={handleLogin}>
+        <input className="log-input" placeholder="Username" ref={userNameRef} />
         <input
           className="log-input"
           placeholder="Password"
           type="password"
-          onChange={(e) => setPassword(e.target.value)}
-        ></input>
-        <button className="login-btn" onClick={() => authorize()}>
-          Login
-        </button>
-      </div>
+          ref={passwordRef}
+        />
+        <button className="login-btn">Login</button>
+      </form>
       <div className="sign-up-log">
         <h6>Don't have an account?</h6>
-        <button className="login-btn" onClick={()=>dispatch(showLogin(false))}>SIGN UP</button>
-        {/* <div>{whoConnected}</div> */}
+        <button
+          className="login-btn"
+          onClick={() => dispatch(setIsRegistered(true))}
+        >
+          SIGN UP
+        </button>
       </div>
     </div>
   );

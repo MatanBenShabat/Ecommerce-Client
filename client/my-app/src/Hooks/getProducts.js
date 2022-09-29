@@ -1,13 +1,19 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 const useGetProducts = () => {
   const [products, setProducts] = useState([]);
-  useEffect(() => {
+
+  const getProducts = useCallback(()=>{
     axios.get("http://localhost:5000/api-products/products").then((res) => {
       setProducts(res.data);
     });
-  }, []);
-  return products;
+  },[setProducts])
+
+  useEffect(() => {
+   getProducts()
+  }, [getProducts]);
+  
+  return [products,getProducts];
 };
 
 export default useGetProducts;

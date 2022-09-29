@@ -37,6 +37,8 @@ app.use("/api-sellerCart", sellerCartRoutes);
 app.use("/api-login-status", LoginStatusRoutes);
 app.use((err, req, res, next) => {
   console.log(err);
+  res.status(500).json( {status: "error",
+  messege: err.messege});
   next();
 });
 app.listen(port, () => {

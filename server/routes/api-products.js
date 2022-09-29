@@ -27,7 +27,7 @@ router.patch("/products/:id", (req, res, next) => {
     : res.json({ error: "invalid input" });
 });
 
-router.delete("/products/?:id", (req, res, next) => {
+router.delete("/products/:id", (req, res, next) => {
   Products.findOneAndDelete({ _id: req.params.id })
     .then((data) => res.json(data))
     .catch(next);

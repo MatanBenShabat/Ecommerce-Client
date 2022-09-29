@@ -1,23 +1,20 @@
 const mongoose = require("mongoose");
 const UsersScheme = mongoose.Schema({
-  customerUserName: {
+  username: {
     type: String,
-    // required: true
+    required: true,
   },
-  
-  customerPassword: {
+
+  password: {
     type: String,
-    // required: true,
+    required: true,
   },
-  adminUserName: {
+  userType: {
     type: String,
-    // required: true
+    required: true,
+    enum: ["CUSTOMER", "ADMIN"],
+    default: "CUSTOMER",
   },
-  
-  adminPassword: {
-    type: String,
-    // required: true,
-  }
 });
 
 const Users = mongoose.model("users", UsersScheme);

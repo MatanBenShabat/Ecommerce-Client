@@ -3,7 +3,7 @@ import "./register.css";
 import axios from "axios";
 import {
   showLogin
-} from "../../Redux/logAdminReducer";
+} from "../../store/loginSlice";
 import { useDispatch} from "react-redux";
 
 
@@ -16,10 +16,10 @@ function Register() {
   const postRegisterDetails = () => {
     axios
       .post("http://localhost:5000/api-users/users", {
-        customerUserName: username,
-        customerPassword: password,
+        username,
+        password,
       })
-      .then((res) => {});
+      .then((res) => {console.log(res)});
   };
   return (
     <div className="register-container">
