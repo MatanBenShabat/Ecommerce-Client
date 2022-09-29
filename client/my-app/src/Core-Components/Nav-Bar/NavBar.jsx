@@ -1,14 +1,14 @@
 import { NavLink } from "react-router-dom";
 import "./nav-bar.css";
-import { useDispatch, useSelector } from "react-redux";
-import {
-selectWhosConnected
-} from "../../Redux/logAdminReducer";
+// import { useDispatch, useSelector } from "react-redux";
+// import {
+// selectWhosConnected
+// } from "../../Redux/logAdminReducer";
 
 
 
 const Navbar = () => {
-  const whoConnected = useSelector(selectWhosConnected);
+  // const whoConnected = useSelector(selectWhosConnected);
 
   return (
     <div className="nav-bar-container">
@@ -38,7 +38,7 @@ const Navbar = () => {
           <NavLink className="nav-btn" to="/register">
             <strong>Register</strong>
           </NavLink>
-          <div>{whoConnected}</div>
+          {/* <div>{whoConnected}</div> */}
         </div>
       </div>
     </div>

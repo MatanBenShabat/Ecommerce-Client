@@ -1,32 +1,43 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import "./login-page.css";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import {
   isAdminSelector,
-  isRegisteredSelector,
-  setIsRegistered,
+  // signUpSelector,
+  setIsLogged,
+  setSignUp,
   userNameSelector,
+  setUsername,
+  setIsAdmin
 } from "../../store/loginSlice";
 import { useRef } from "react";
 
-const Login = () => {
+const LoginForm = () => {
   const dispatch = useDispatch();
   const isAdmin = useSelector(isAdminSelector);
-  const isRegistered = useSelector(isRegisteredSelector);
+  // const signUp = useSelector(signUpSelector);
   const userName = useSelector(userNameSelector);
 
   const userNameRef = useRef();
   const passwordRef = useRef();
 
   const handleLogin = (e) => {
-    e.preventDFefault();
+    e.preventDefault();
     axios
       .post("http://localhost:5000/api-users/users/login", {
         username: userNameRef.current.value,
         password: passwordRef.current.value,
       })
-      .then((res) => {});
+      .then((result) => {console.log(result.data.data.user.username)
+        dispatch(setUsername(result.data.data.user.username))
+        dispatch(setIsLogged(true))
+        dispatch(setIsAdmin(result.data.data.user.userType === "ADMIN"))
+
+        })
+      .catch((error) => console.log(error.response.data.messege))
+
+      
   };
 
   return (
@@ -46,13 +57,14 @@ const Login = () => {
         <h6>Don't have an account?</h6>
         <button
           className="login-btn"
-          onClick={() => dispatch(setIsRegistered(true))}
+          onClick={() => dispatch(setSignUp(false))}
         >
           SIGN UP
         </button>
+        <h1>{userName}</h1>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default LoginForm;

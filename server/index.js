@@ -6,12 +6,8 @@ require('dotenv').config()
 const bodyParser = require("body-parser");
 mongoose.Promise = global.Promise;
 
-const adminRoutes = require("./routes/api-users");
-const buyerRoutes = require("./routes/api-buyer");
+const usersRoutes = require("./routes/api-users");
 const productsRoutes = require("./routes/api-products");
-const sellerRoutes = require("./routes/api-seller");
-const sellerCartRoutes = require("./routes/api-sellerCart");
-const LoginStatusRoutes = require("./routes/api-login-status");
 
 mongoose
   .connect(process.env.DB, { useNewUrlParser: true })
@@ -27,14 +23,11 @@ app.use((req, res, next) => {
   res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE, PATCH");
   next();
 });
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
+app.use(express.json());
 
-app.use("/api-users", adminRoutes);
-app.use("/api-buyer", buyerRoutes);
+app.use("/api-users", usersRoutes);
 app.use("/api-products", productsRoutes);
-app.use("/api-seller", sellerRoutes);
-app.use("/api-sellerCart", sellerCartRoutes);
-app.use("/api-login-status", LoginStatusRoutes);
 app.use((err, req, res, next) => {
   console.log(err);
   res.status(500).json( {status: "error",

@@ -1,4 +1,4 @@
-import useGetProducts from "../../Hooks/getProducts";
+import useGetProducts from "../../Hooks/useGetProducts";
 import "./products.css";
 import Product from "./Product";
 const Products = () => {

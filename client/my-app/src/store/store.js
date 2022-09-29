@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import logAdminReducer from "../src/Redux/logAdminReducer";
+import loginReducer from "./loginSlice";
 
 export default configureStore({
   reducer: {
-    admin: logAdminReducer,
+    login: loginReducer,
   }
 });

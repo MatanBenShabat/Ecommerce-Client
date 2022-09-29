@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useMutation } from "react-query";
 
 import "./products.css";
-import { selectCustomerLogStatus } from "../../Redux/logAdminReducer";
+import { isLoggedSelector } from "../../store/loginSlice";
 import { useRef } from "react";
 
 const Product = ({ item, getProducts }) => {
@@ -22,7 +22,7 @@ const Product = ({ item, getProducts }) => {
   );
 
 
-  const isCustomerLogged = useSelector(selectCustomerLogStatus);
+  const isLogged = useSelector(isLoggedSelector);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -40,7 +40,7 @@ const Product = ({ item, getProducts }) => {
       <h2>{item.productsName}</h2>
       <h2>Price:{item.price}$</h2>
       <h2>Current Bid:{item.currentBid}$</h2>
-      {isCustomerLogged ? (
+      {isLogged ? (
         <form className="bid-container" onSubmit={handleSubmit}>
           <input placeholder="Place Bid..." type="number" min={(item.currentBid + 5)} ref={ref} />
           <button>Bid</button>
