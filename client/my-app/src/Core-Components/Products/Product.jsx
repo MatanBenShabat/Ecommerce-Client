@@ -11,7 +11,7 @@ const Product = ({ item }) => {
 
   const bid = () => {
     axios.patch(`http://localhost:5000/api-products/products/${item._id}`, {
-      currentBid: bidValue,
+      currentBid: bidValue
     });
   };
 
