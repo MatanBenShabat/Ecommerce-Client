@@ -15,11 +15,11 @@ router.post("/products", (req, res, next) => {
         .catch(next)
     : res.json({ error: "invalid input" });
 });
-router.patch("/products", (req, res, next) => {
+router.patch("/products/:id", (req, res, next) => {
   req.body
-    ? Products.updateMany(
-        { currentBid: 12 },
-        { $set: { currentBid: req.body.currentBid } }
+    ? Products.updateOne(
+        {_id: req.params.id},
+         {$set:{currentBid: req.body.currentBid }}
       )
         .then((data) => res.json(data))
         .then(console.log(req.body.currentBid))
