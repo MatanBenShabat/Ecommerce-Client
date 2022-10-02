@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useSelector } from "react-redux";
-import { isLoggedSelector, userNameSelector } from "../../store/loginSlice";
+import { isLoggedSelector } from "../../store/loginSlice";
 import axios from "axios";
 import { useMutation } from "react-query";
 import React from "react";
@@ -14,8 +14,8 @@ const AddProduct = ({ getProducts }) => {
   // const user = useSelector(userNameSelector);
 
   const handleSuccess = React.useCallback(
-    (data) => {
-      socket.emit("add_product", data);
+    () => {
+      socket.emit("add_product");
       getProducts();
     },
     [getProducts]

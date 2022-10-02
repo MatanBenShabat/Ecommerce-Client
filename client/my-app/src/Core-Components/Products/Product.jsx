@@ -2,15 +2,25 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useMutation } from "react-query";
 
+
 import "./products.css";
 import { isLoggedSelector, userNameSelector } from "../../store/loginSlice";
-import { useRef } from "react";
+import React, { useRef } from "react";
+import socket from "../../socket/socket";
 
 const Product = ({ item, getProducts }) => {
   const ref = useRef();
 
   const isLogged = useSelector(isLoggedSelector);
   const user = useSelector(userNameSelector);
+
+  const handleSuccess = React.useCallback(
+    () => {
+      socket.emit("add_bid");
+      getProducts();
+    },
+    [getProducts]
+  );
 
   const mutation = useMutation(
     (newBid) => {
@@ -22,7 +32,7 @@ const Product = ({ item, getProducts }) => {
         }
       );
     },
-    { onSuccess: getProducts }
+    { onSuccess: handleSuccess }
   );
 
 
