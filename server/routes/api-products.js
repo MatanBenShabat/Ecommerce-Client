@@ -10,7 +10,6 @@ router.get("/products", (req, res, next) => {
 
 router.post("/products", (req, res, next) => {
   if (req.body) {
-    console.log(req.body);
     Products.create(req.body)
       .then((data) => res.json(data))
       .catch(next);

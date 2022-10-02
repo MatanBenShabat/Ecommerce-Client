@@ -3,28 +3,34 @@ import { useSelector } from "react-redux";
 import { isLoggedSelector, userNameSelector } from "../../store/loginSlice";
 import axios from "axios";
 import { useMutation } from "react-query";
-// import { useState } from "react";
+import React from "react";
+import socket from "../../socket/socket";
 
 const AddProduct = ({ getProducts }) => {
   const imageRef = useRef();
   const productNameRef = useRef();
   const priceRef = useRef();
   const isLogged = useSelector(isLoggedSelector);
-  const user = useSelector(userNameSelector);
-  //   const [image,setImage] = useState("")
-  //   const [name,setName] = useState("")
-  //   const [price,setPrice] = useState("")
+  // const user = useSelector(userNameSelector);
+
+  const handleSuccess = React.useCallback(
+    (data) => {
+      socket.emit("add_product", data);
+      getProducts();
+    },
+    [getProducts]
+  );
 
   const addItemMutation = useMutation(
     ({ image, productsName, price }) => {
-        console.log(image,productsName,price);
+      console.log(image, productsName, price);
       return axios.post("http://localhost:5000/api-products/products", {
         image: image,
         productsName: productsName,
         price: price,
       });
     },
-    { onSuccess: getProducts }
+    { onSuccess: handleSuccess }
   );
 
   const handleSubmit = (e) => {
@@ -34,9 +40,6 @@ const AddProduct = ({ getProducts }) => {
       productsName: productNameRef.current.value,
       price: priceRef.current.valueAsNumber,
     });
-    // imageRef.current.value = null;
-    // productNameRef.current.value = null;
-    // priceRef.current.value = null;
     console.log(imageRef.current.value);
     console.log(productNameRef.current.value);
     console.log(priceRef.current.value);
