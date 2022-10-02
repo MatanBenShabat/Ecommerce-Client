@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 const ProductstScheme = mongoose.Schema({
-    image: String,
-    productsName: String,
-    price:Number,
-    currentBid:Number,
-    user:String,
-    winner:String
+    image: {type:String,required:[true, 'A product must have an image']},
+    productsName: {type:String,required:[true, 'A product must have a name']},
+    price:{type:Number,required:[true, 'A product must have a price']},
+    currentBid:{type:Number,default:null},
+    currentBidder:{type:String,default:"No One Yet"},
+    seller:{type:String,default:"No One Yet"},
+    winner:{type:String,default:"No One Yet"}
 
 });
 

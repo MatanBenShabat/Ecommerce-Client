@@ -9,17 +9,21 @@ router.get("/products", (req, res, next) => {
 });
 
 router.post("/products", (req, res, next) => {
-  req.body
-    ? Products.create(req.body)
-        .then((data) => res.json(data))
-        .catch(next)
-    : res.json({ error: "invalid input" });
+  if (req.body) {
+    console.log(req.body);
+    Products.create(req.body)
+      .then((data) => res.json(data))
+      .catch(next);
+  } else {
+    res.json({ error: "invalid input" });
+  }
 });
 router.patch("/products/:id", (req, res, next) => {
   req.body
     ? Products.updateOne(
-        {_id: req.params.id},
-         {$set:{currentBid: req.body.currentBid }}
+        { _id: req.params.id },
+        { $set: { currentBid: req.body.currentBid } },
+        { $set: { currentBidder: req.body.currentBidder } }
       )
         .then((data) => res.json(data))
         .then(console.log(req.body.currentBid))
