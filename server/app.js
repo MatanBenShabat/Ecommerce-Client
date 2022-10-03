@@ -1,9 +1,14 @@
 const express = require("express");
+const morgan = require('morgan');
 const mongoose = require("mongoose");
 const cors = require('cors')
 // mongoose.Promise = global.Promise;
 
 const app = express();
+
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
 const usersRoutes = require("./routes/api-users");
 const productsRoutes = require("./routes/api-products");
