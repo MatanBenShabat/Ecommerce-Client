@@ -9,7 +9,6 @@ exports.aliasTopProducts = (req, res, next) => {
 };
 exports.getProducts = async (req, res) => {
   try {
-    // EXECUTE QUERY
     const features = new APIFeatures(Products.find(), req.query)
       .filter()
       .sort()
@@ -17,7 +16,6 @@ exports.getProducts = async (req, res) => {
       .paginate();
     const products = await features.query;
 
-    // SEND RESPONSE
     res.status(200).json({
       status: 'success',
       results: products.length,
@@ -65,10 +63,8 @@ exports.deleteProduct = async (req, res, next) => {
   try{
     const product = await Products.findOneAndDelete({ _id: req.params.id })
     res.status(204).json({
-    // res.status(200).json({
       status:"success",
       data:null
-      // data: product
     })
   }
     catch(err){
@@ -78,3 +74,41 @@ exports.deleteProduct = async (req, res, next) => {
       })
     };
 };
+
+exports.getProductsStats = async (req,res) => {
+  try{
+    const stats = await Products.aggregate([
+      {
+        $match : { rating: {$gte: 4}}
+      },
+      {
+        $group: {
+          _id: { $toUpper: '$brand'},
+          numProducts: { $sum: 1},
+          avgRating: {$avg: '$rating'},
+          avgPrice: {$avg: '$price'},
+          minPrice: { $min: '$price'},
+          maxPrice: {$max: '$price'}
+        }
+      },
+      {
+        $sort: { avgPrice: 1}
+      }
+
+    ])
+    res.status(200).json({
+      status: 'success',
+      results: stats.length,
+      data: {
+        stats
+      }
+    });
+  }
+  
+  catch(err){
+    res.status(404).json({
+      status:"fail",
+      messege: err
+    })
+  }
+}
