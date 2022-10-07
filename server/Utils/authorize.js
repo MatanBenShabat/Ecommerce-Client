@@ -1,5 +1,10 @@
+const bcrypt = require('bcrypt');
+
+
 const authorize = (req,result) => {
-  return req.body.password === result.password
+  let {typedPassword} = req.body
+  typedPassword = bcrypt.hash(typedPassword, 10)
+  return bcrypt.compare(result.password, typedPassword)
 }
 
 module.exports =  authorize

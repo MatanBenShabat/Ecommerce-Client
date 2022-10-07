@@ -5,8 +5,6 @@ const UsersPostValidation = (req, res, next) => {
   // const body = req.body^^^^
   const result = UsersSchema.validate(body);
 
-  // console.log((result));
-
   const { value, error } = result;
 
   const valid = (error == null);

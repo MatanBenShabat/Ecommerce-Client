@@ -1,4 +1,5 @@
-const Users = require("../models/users");
+const Users = require("../models/usersModel");
+const authorize = require("../Utils/authorize");
 
 exports.getUsers = (req, res, next) => {
   Users.find({})
@@ -9,10 +10,21 @@ exports.getUsers = (req, res, next) => {
 exports.createUser = (req, res, next) => {
   if (!req.body) res.json({ error: "invalid input" });
 
-  Users.create(req.body)
-    .then((data) => res.status(201).json(data))
-    .catch(next);
+  Users.create(req.user)
+    .then(() =>
+      res.status(201).json({
+        error: false,
+        message: "user registered successfully",
+      })
+    )
+    .catch((err) => {
+      res.json({
+        error: true,
+        message: "couldn't register user",
+      });
+    });
 };
+
 exports.login = (req, res, next) => {
   Users.findOne({ username: req.body.username })
 

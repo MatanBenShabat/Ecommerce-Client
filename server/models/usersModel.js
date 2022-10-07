@@ -11,6 +11,7 @@ const UsersScheme = mongoose.Schema({
   password: {
     type: String,
     required: [true, 'A user must have a password'],
+    select: false
   },
   userType: {
     type: String,
@@ -19,6 +20,5 @@ const UsersScheme = mongoose.Schema({
     default: "CUSTOMER",
   },
 }); 
-
-const Users = mongoose.model("users", UsersScheme);
+const Users = mongoose.model("Users", UsersScheme);
 module.exports = Users;
