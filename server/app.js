@@ -1,17 +1,22 @@
 const express = require("express");
 const morgan = require("morgan");
+const globalErrorHandler = require("./controllers/errorController");
 const mongoose = require("mongoose");
 const cors = require("cors");
-// mongoose.Promise = global.Promise;
 
 const app = express();
 
 if (process.env.NODE_ENV === "development") {
+  console.log("development");
   app.use(morgan("dev"));
+}
+else{
+  console.log("production");
 }
 
 const usersRoutes = require("./routes/api-users");
 const productsRoutes = require("./routes/api-products");
+const handle404 = require("./middlewares/handle404");
 
 mongoose
   .connect(process.env.DB, { useNewUrlParser: true })
@@ -20,15 +25,13 @@ mongoose
 
 app.use(cors());
 
-// app.use(bodyParser.json());
 app.use(express.json());
 
 app.use("/api-users", usersRoutes);
 app.use("/api-products", productsRoutes);
-app.use((err, req, res, next) => {
-  console.log(err);
-  res.status(500).json({ status: "error", messege: err.messege });
-  next();
-});
+
+app.all("*", handle404);
+
+app.use(globalErrorHandler);
 
 module.exports = app;

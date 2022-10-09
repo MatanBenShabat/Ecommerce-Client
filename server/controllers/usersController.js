@@ -32,7 +32,7 @@ exports.login = (req, res, next) => {
       if (!authorize(req, user)) {
         res.status(401).json({
           status: "error",
-          messege: "password is incorrect",
+          message: "password is incorrect",
         });
       } else {
         res.status(200).json({ status: "success", data: { user } });

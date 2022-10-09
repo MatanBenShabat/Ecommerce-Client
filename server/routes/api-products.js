@@ -11,6 +11,7 @@ router
   )
   .get("/products-stats", productsController.getProductsStats)
   .get("/products", productsController.getProducts)
+  .get("/products/:id", productsController.getProduct)
   .post("/products", productsController.createProduct)
   .patch("/products/:id", productsController.updateProduct)
   .delete("/products/?:id", productsController.deleteProduct);

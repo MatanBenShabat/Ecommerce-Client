@@ -30,8 +30,8 @@ const Product = ({ item, getProducts }) => {
           currentBid: newBid,
           currentBidder: user,
         }
-      );
-    },
+        );
+      },
     { onSuccess: handleSuccess }
   );
 

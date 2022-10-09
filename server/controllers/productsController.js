@@ -1,114 +1,113 @@
 const Products = require("../models/productsModel");
 const APIFeatures = require("../Utils/apiFeatures");
+const AppError = require('../Utils/appError')
+const catchAsync = require("../Utils/catchAsync");
 
 exports.aliasTopProducts = (req, res, next) => {
-  req.query.limit = '5';
-  req.query.sort = 'price';
-  req.query.fields = 'productsName,price,image';
+  req.query.limit = "5";
+  req.query.sort = "price";
+  req.query.fields = "productsName,price,image";
   next();
 };
-exports.getProducts = async (req, res) => {
-  try {
-    const features = new APIFeatures(Products.find(), req.query)
-      .filter()
-      .sort()
-      .limitFields()
-      .paginate();
-    const products = await features.query;
+exports.getProducts = catchAsync(async (req, res, next) => {
+  const features = new APIFeatures(Products.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+  const products = await features.query;
 
-    res.status(200).json({
-      status: 'success',
-      results: products.length,
-      data: {
-        products
-      }
-    });
-  } catch (err) {
-    res.status(404).json({
-      status: 'fail',
-      message: err
-    });
-  }
-};
-exports.createProduct = async (req, res) => {
-  try {
-    newProduct = await Products.create(req.body);
-    res.status(201).json({
-      status: "success",
-      data: {
-        product: newProduct,
-      },
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: "fail",
-      messege: "Invalid data sent!  ",
-    });
-  }
-};
+  res.status(200).json({
+    status: "success",
+    results: products.length,
+    data: {
+      products,
+    },
+  });
+});
 
-exports.updateProduct = (req, res, next) => {
-  req.body
-    ? Products.updateOne(
-        { _id: req.params.id },
-        { $set: { currentBid: req.body.currentBid } },
-        { $set: { currentBidder: req.body.currentBidder } }
-      )
-        .then((data) => res.status(200).json(data))
-        .then(console.log(req.body.currentBid))
-        .catch(next)
-    : res.json({ error: "invalid input" });
-};
-exports.deleteProduct = async (req, res, next) => {
-  try{
-    const product = await Products.findOneAndDelete({ _id: req.params.id })
-    res.status(204).json({
-      status:"success",
-      data:null
-    })
-  }
-    catch(err){
-      res.status(400).json({
-        status:"fail",
-        messege:"Error"
-      })
-    };
-};
+exports.getProduct = catchAsync(async (req, res, next) => {
+  const product = await Products.findById(req.params.id);
+  
+if(!product) {
+  return next(new AppError('No product found with that ID',404))
+}
 
-exports.getProductsStats = async (req,res) => {
-  try{
-    const stats = await Products.aggregate([
-      {
-        $match : { rating: {$gte: 4}}
-      },
-      {
-        $group: {
-          _id: { $toUpper: '$brand'},
-          numProducts: { $sum: 1},
-          avgRating: {$avg: '$rating'},
-          avgPrice: {$avg: '$price'},
-          minPrice: { $min: '$price'},
-          maxPrice: {$max: '$price'}
-        }
-      },
-      {
-        $sort: { avgPrice: 1}
-      }
+  res.status(200).json({
+    status: 'success',
+    data:{
+      product
+    }
+  })
+});
 
-    ])
-    res.status(200).json({
-      status: 'success',
-      results: stats.length,
-      data: {
-        stats
-      }
-    });
+exports.createProduct = catchAsync(async (req, res, next) => {
+  newProduct = await Products.create(req.body);
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      product: newProduct,
+    },
+  });
+});
+
+exports.updateProduct = catchAsync(async (req, res, next) => {
+  updatedProduct = await Products.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if(!updatedProduct) {
+    return next(new AppError('No product found with that ID',404))
   }
   
-  catch(err){
-    res.status(404).json({
-      status:"fail",
-      messege: err
-    })
-  }
-}
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      product: updatedProduct,
+    },
+  });
+});
+
+exports.deleteProduct = catchAsync(async (req, res, next) => {
+  const product = await Products.findOneAndDelete({ _id: req.params.id });
+
+  if(!product) {
+    return next(new AppError('No product found with that ID',404))
+  }  
+
+  res.status(204).json({
+    status: "success",
+    data: null,
+  });
+});
+
+exports.getProductsStats = catchAsync(async (req, res, next) => {
+  const stats = await Products.aggregate([
+    {
+      $match: { rating: { $gte: 4 } },
+    },
+    {
+      $group: {
+        _id: { $toUpper: "$brand" },
+        numProducts: { $sum: 1 },
+        avgRating: { $avg: "$rating" },
+        avgPrice: { $avg: "$price" },
+        minPrice: { $min: "$price" },
+        maxPrice: { $max: "$price" },
+      },
+    },
+    {
+      $sort: { avgPrice: 1 },
+    },
+  ]);
+  res.status(200).json({
+    status: "success",
+    results: stats.length,
+    data: {
+      stats,
+    },
+  });
+});

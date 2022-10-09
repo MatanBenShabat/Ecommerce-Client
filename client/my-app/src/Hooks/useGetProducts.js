@@ -5,7 +5,6 @@ const useGetProducts = () => {
 
   const getProducts = useCallback(()=>{
     axios.get("http://localhost:5000/api-products/products").then((res) => {
-      console.log(res.data.data.products);
       setProducts(res.data.data.products);
     });
   },[setProducts])
