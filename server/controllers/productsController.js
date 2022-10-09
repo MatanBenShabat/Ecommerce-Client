@@ -16,7 +16,6 @@ exports.getProducts = catchAsync(async (req, res, next) => {
     .limitFields()
     .paginate();
   const products = await features.query;
-
   res.status(200).json({
     status: "success",
     results: products.length,
@@ -28,7 +27,6 @@ exports.getProducts = catchAsync(async (req, res, next) => {
 
 exports.getProduct = catchAsync(async (req, res, next) => {
   const product = await Products.findById(req.params.id);
-  
 if(!product) {
   return next(new AppError('No product found with that ID',404))
 }
