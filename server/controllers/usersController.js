@@ -1,11 +1,17 @@
 const Users = require("../models/usersModel");
 const authorize = require("../Utils/authorize");
+const catchAsync = require("../Utils/catchAsync");
 
-exports.getUsers = (req, res, next) => {
-  Users.find({})
-    .then((data) => res.json(data))
-    .catch(next);
-};
+exports.getUsers = catchAsync(async (req, res, next) => {
+  const users = await Users.find({})
+  res.status(200).json({
+    status: "success",
+    results: users.length,
+    data: {
+      users
+    }
+  })
+})
 
 exports.createUser = (req, res, next) => {
   if (!req.body) res.json({ error: "invalid input" });
