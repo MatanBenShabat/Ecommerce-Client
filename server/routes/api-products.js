@@ -13,10 +13,15 @@ router
   .get("/products-stats", productsController.getProductsStats);
 
 router
-  .get("/products", authController.protect,  productsController.getProducts)
+  .get("/products", authController.protect, productsController.getProducts)
   .get("/products/:id", productsController.getProduct)
   .post("/products", productsController.createProduct)
   .patch("/products/:id", productsController.updateProduct)
-  .delete("/products/?:id", productsController.deleteProduct);
+  .delete(
+    "/products/?:id",
+    authController.protect,
+    authController.restrictTo("admin", "seller"),
+    productsController.deleteProduct
+  );
 
 module.exports = router;
