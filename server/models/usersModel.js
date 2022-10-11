@@ -37,6 +37,7 @@ const UsersScheme = mongoose.Schema({
       },
     },
   },
+  passwordChangedAt: Date,
   photo: String,
 
   userType: {
@@ -64,6 +65,18 @@ UsersScheme.methods.correctPassword = async function (
   userPassword
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+UsersScheme.methods.changedPasswordAfer = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimesstamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+    return JWTTimestamp < changedTimesstamp 
+  }
+  // False means NOT changed
+  return false;
 };
 
 const Users = mongoose.model("Users", UsersScheme);

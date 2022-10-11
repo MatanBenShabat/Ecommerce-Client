@@ -1,5 +1,6 @@
 const express = require("express");
 const productsController = require("../controllers/productsController");
+const authController = require("../controllers/authController");
 
 const router = express.Router();
 
@@ -9,8 +10,10 @@ router
     productsController.aliasTopProducts,
     productsController.getProducts
   )
-  .get("/products-stats", productsController.getProductsStats)
-  .get("/products", productsController.getProducts)
+  .get("/products-stats", productsController.getProductsStats);
+
+router
+  .get("/products", authController.protect,  productsController.getProducts)
   .get("/products/:id", productsController.getProduct)
   .post("/products", productsController.createProduct)
   .patch("/products/:id", productsController.updateProduct)
