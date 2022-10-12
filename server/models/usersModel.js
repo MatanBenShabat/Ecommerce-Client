@@ -45,7 +45,7 @@ const UsersScheme = mongoose.Schema({
 
   userType: {
     type: String,
-    required: true,
+    // required: true,
     enum: ["customer", "seller", "admin"],
     default: "customer",
   },
@@ -62,6 +62,14 @@ UsersScheme.pre("save", async function (next) {
   this.passwordConfirm = undefined;
   next();
 });
+
+UsersScheme.pre("save", function(next){
+  if(!this.isModified("password") || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() -1000
+  next()
+
+})
 
 UsersScheme.methods.correctPassword = async function (
   candidatePassword,
