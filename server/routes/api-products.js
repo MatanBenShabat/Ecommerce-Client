@@ -15,8 +15,17 @@ router
 router
   .get("/products", authController.protect, productsController.getProducts)
   .get("/products/:id", productsController.getProduct)
-  .post("/products", productsController.createProduct)
-  .patch("/products/:id", productsController.updateProduct)
+  .post(
+    "/products",
+    authController.protect,
+    authController.restrictTo("admin", "seller"),
+    productsController.createProduct
+  )
+  .patch(
+    "/products/:id",
+    authController.protect,
+    productsController.updateProduct
+  )
   .delete(
     "/products/?:id",
     authController.protect,

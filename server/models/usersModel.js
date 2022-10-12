@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const crypto = require("crypto");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 
@@ -38,12 +39,14 @@ const UsersScheme = mongoose.Schema({
     },
   },
   passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
   photo: String,
 
   userType: {
     type: String,
     required: true,
-    enum: ["customer","seller","admin"],
+    enum: ["customer", "seller", "admin"],
     default: "customer",
   },
 });
@@ -73,11 +76,27 @@ UsersScheme.methods.changedPasswordAfer = function (JWTTimestamp) {
       this.passwordChangedAt.getTime() / 1000,
       10
     );
-    return JWTTimestamp < changedTimesstamp 
+    return JWTTimestamp < changedTimesstamp;
   }
   // False means NOT changed
   return false;
 };
+
+UsersScheme.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+    console.log({resetToken}, this.passwordResetToken);
+
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+    return resetToken;
+};
+
 
 const Users = mongoose.model("Users", UsersScheme);
 module.exports = Users;
