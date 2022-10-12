@@ -10,9 +10,19 @@ router
   .post("/signup", authController.signup)
   .post("/login", authController.login)
   .post("/forgotPassword", authController.forgotPassword)
-  .patch("/resetPassword/:token", authController.resetPassword);
+  .patch("/resetPassword/:token", authController.resetPassword)
+  .patch(
+    "/updateMyPassword",
+    authController.protect,
+    authController.updatePassword
+  );
 
 router
+.patch("/updateMe",authController.protect,usersController.upadateMe)
+.delete("/deleteMe",authController.protect,usersController.deleteMe)
+
+
+
   .get("/users", usersController.getUsers)
   .post(
     "/users",
