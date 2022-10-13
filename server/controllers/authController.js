@@ -24,6 +24,7 @@ const createSendToken = (user, statusCode, res) => {
   };
   if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
   res.cookie("jwt", token, cookieOptions);
+  // res.header('Authorization', 'Bearer '+ token);
 
   //Removes password from the output
   user.password = undefined;
@@ -44,6 +45,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
+    userType: req.body.userType
   });
   createSendToken(newUser, 201, res);
 });
@@ -56,10 +58,9 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError("Please provide email and password!", 400));
   }
 
-  //2)Chec if user exsists && password is correct
+  //2)Check if user exsists && password is correct
 
   const user = await Users.findOne({ email }).select("+password");
-
   if (
     !user ||
     !(await user.correctPassword(password.toString(), user.password))
@@ -72,14 +73,15 @@ exports.login = catchAsync(async (req, res, next) => {
 
 exports.protect = catchAsync(async (req, res, next) => {
   //1) Getting token and check of it's there
-  let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith("Bearer")
-  ) {
-    token = req.headers.authorization.split(" ")[1];
-  }
-
+  // let token;
+  // if (
+  //   req.headers.authorization &&
+  //   req.headers.authorization.startsWith("Bearer")
+  // ) {
+  //   token = req.headers.authorization.split(" ")[1];
+  // }
+  token = req.cookies["jwt"]
+  console.log(token);
   if (!token) {
     return next(
       new AppError("You are not logged in! Please log in to get access.", 401)
@@ -115,11 +117,13 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 exports.restrictTo = (...userTypes) => {
   return (req, res, next) => {
+    // console.log(req.user);
     if (!userTypes.includes(req.user.userType)) {
       return next(
         new AppError("You do not have permission to perform this action", 403)
       );
     }
+    console.log("success");
     next();
   };
 };

@@ -3,15 +3,16 @@ import { createSlice } from "@reduxjs/toolkit";
 export const loginSlice = createSlice({
   name: "login",
   initialState: {
-    isAdmin: false,
+    userType: false,
     userName: "",
     isLogged: false,
     signUp: true,
+    token: ""
   },
   reducers: {
-    setIsAdmin: (state, payload) => {
-      state.isAdmin = payload.payload;
-      localStorage.setItem("isAdmin",payload.payload)
+    setUserType: (state, payload) => {
+      state.userType = payload.payload;
+      localStorage.setItem("userType",payload.payload)
     },
     setUsername: (state, payload) => {
       state.userName = payload.payload;
@@ -27,14 +28,20 @@ export const loginSlice = createSlice({
       localStorage.setItem("isLogged",payload.payload)
 
     },
+    // setToken: (state, payload) => {
+    //   state.isLogged = payload.payload;
+    //   localStorage.setItem("token",payload.payload)
+
+    // },
   },
 });
 
-export const { setIsAdmin, setUsername, setSignUp, setIsLogged } = loginSlice.actions;
-export const isAdminSelector = (state) => state.login.isAdmin;
+export const { setToken,setUserType, setUsername, setSignUp, setIsLogged } = loginSlice.actions;
+export const userTypeSelector = (state) => state.login.userType;
 export const userNameSelector = (state) => state.login.userName;
 export const signUpSelector = (state) => state.login.signUp;
 export const isLoggedSelector = (state) => state.login.isLogged;
+export const tokenSelector = (state) => state.login.token;
 
 
 export default loginSlice.reducer;

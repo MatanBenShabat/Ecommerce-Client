@@ -2,25 +2,38 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import { useMutation } from "react-query";
 
-
 import "./products.css";
-import { isLoggedSelector, userNameSelector } from "../../store/loginSlice";
+import { userTypeSelector, userNameSelector } from "../../store/loginSlice";
 import React, { useRef } from "react";
 import socket from "../../socket/socket";
+import DeleteProduct from "./DeleteProduct";
 
 const Product = ({ item, getProducts }) => {
   const ref = useRef();
-
-  const isLogged = useSelector(isLoggedSelector);
+  const userType = useSelector(userTypeSelector);
   const user = useSelector(userNameSelector);
 
-  const handleSuccess = React.useCallback(
+  // const token = localStorage.getItem("token");
+
+  const handleDeleteSuccess = React.useCallback(() => {
+    socket.emit("delete_product");
+    getProducts();
+  }, [getProducts]);
+
+  const deleteMutation = useMutation(
     () => {
-      socket.emit("add_bid");
-      getProducts();
+      return axios.delete(
+        `http://localhost:5000/api-products/products/${item._id}`,
+        { withCredentials: true }
+      );
     },
-    [getProducts]
+    { onSuccess: handleDeleteSuccess }
   );
+
+  const handleSuccess = React.useCallback(() => {
+    socket.emit("add_bid");
+    getProducts();
+  }, [getProducts]);
 
   const mutation = useMutation(
     (newBid) => {
@@ -29,13 +42,12 @@ const Product = ({ item, getProducts }) => {
         {
           currentBid: newBid,
           currentBidder: user,
-        }
-        );
-      },
+        },
+        { withCredentials: true }
+      );
+    },
     { onSuccess: handleSuccess }
   );
-
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -54,7 +66,7 @@ const Product = ({ item, getProducts }) => {
       <h2>Price:{item.price}$</h2>
       <h2>Current Bid:{item.currentBid}$</h2>
       <h2>Current Bidder:{item.currentBidder}</h2>
-      {isLogged ? (
+      {localStorage.getItem("isLogged") ? (
         <form className="bid-container" onSubmit={handleSubmit}>
           <input
             placeholder="Place Bid..."
@@ -68,6 +80,7 @@ const Product = ({ item, getProducts }) => {
           {mutation.isSuccess && <h4>New bid is : {item.currentBid}$</h4>}
         </form>
       ) : null}
+      {userType === "seller" || "admin" ? <button onClick={deleteMutation.mutate}>Delete</button>: null}
     </li>
   );
 };

@@ -4,7 +4,7 @@ const { Server } = require("socket.io");
 const mongoose = require("mongoose");
 
 process.on('uncaughtException', err => {
-  console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+  console.log('UNCAUGHT EXCEPTION! Shutting down...');
   console.log(err.name, err.message);
   process.exit(1);
 });
@@ -32,6 +32,9 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("product_added");
   });
   socket.on("add_bid", () => {
+    socket.broadcast.emit("product_added");
+  });
+  socket.on("delete_product", () => {
     socket.broadcast.emit("product_added");
   });
 });

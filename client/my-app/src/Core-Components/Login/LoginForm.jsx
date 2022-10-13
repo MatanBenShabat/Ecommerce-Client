@@ -2,21 +2,19 @@
 import "./login-page.css";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+
 import {
-  isAdminSelector,
-  // signUpSelector,
   setIsLogged,
   setSignUp,
   userNameSelector,
   setUsername,
-  setIsAdmin
+  setUserType,
+  setToken
 } from "../../store/loginSlice";
 import { useRef } from "react";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
-  const isAdmin = useSelector(isAdminSelector);
-  // const signUp = useSelector(signUpSelector);
   const userName = useSelector(userNameSelector);
 
   const userNameRef = useRef();
@@ -25,17 +23,19 @@ const LoginForm = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:5000/api-users/users/login", {
-        username: userNameRef.current.value,
+      .post("http://localhost:5000/api-users/login", {
+        email: userNameRef.current.value,
         password: passwordRef.current.value,
-      })
-      .then((result) => {console.log(result.data.data.user.username)
+      },{
+        withCredentials: true
+    })
+      .then((result) => {
         dispatch(setUsername(result.data.data.user.username))
-        dispatch(setIsLogged(true))
-        dispatch(setIsAdmin(result.data.data.user.userType === "ADMIN"))
+        setTimeout(dispatch(setIsLogged(true)),500)
+        dispatch(setUserType(result.data.data.user.userType))
 
         })
-      .catch((error) => console.log(error.response.data.messege))
+      .catch((error) => console.log(error))
 
       
   };

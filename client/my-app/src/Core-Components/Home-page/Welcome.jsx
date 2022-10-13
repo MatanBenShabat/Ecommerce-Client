@@ -22,7 +22,7 @@ const Welcome = () => {
             repeatDelay: 1,
           }}
         >
-            <h1>Welcome Back {name}!</h1>
+            <h1>Welcome Back {localStorage.getItem("userName")}!</h1>
         </motion.div>
         </div>
     )

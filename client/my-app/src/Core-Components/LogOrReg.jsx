@@ -7,7 +7,7 @@ import Welcome from "./Home-page/Welcome";
 
 const LogOrReg = () => {
     const isSignedUp = useSelector(signUpSelector);
-    const isLogged = useSelector(isLoggedSelector);
+    const isLogged = localStorage.getItem("isLogged");
     if(isLogged) return <Welcome/>
     if(isSignedUp) return <LoginForm/>
     return <Register/>

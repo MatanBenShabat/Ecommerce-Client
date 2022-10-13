@@ -6,12 +6,12 @@ import NavBar from "./Core-Components/Nav-Bar/NavBar";
 import Products from "./Core-Components/Products/Products";
 import Register from "./Core-Components/Register/Register";
 import { QueryClient, QueryClientProvider } from "react-query";
-import useLocalStorage from "./Hooks/useLocalStorage";
+// import useLocalStorage from "./Hooks/useLocalStorage";
 
 const queryClient = new QueryClient();
 
 function App() {
-  useLocalStorage();
+  // useLocalStorage();
   return (
     <QueryClientProvider client={queryClient}>
       <NavBar></NavBar>

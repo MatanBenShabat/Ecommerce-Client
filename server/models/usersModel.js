@@ -42,19 +42,19 @@ const UsersScheme = mongoose.Schema({
   passwordResetToken: String,
   passwordResetExpires: Date,
   image: String,
-  active: {
-    type: Boolean,
-    default: true,
-    select: false
+  // active: {
+  //   type: Boolean,
+  //   default: true,
+  //   select: false
 
-  },
+  // },
 
   userType: {
     type: String,
     // required: true,
     enum: ["customer", "seller", "admin"],
     default: "customer",
-    select: false
+    // select: false
   },
 });
 
