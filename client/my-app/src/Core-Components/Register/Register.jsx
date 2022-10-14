@@ -1,6 +1,6 @@
 import "./register.css";
 import axios from "axios";
-import { setSignUp, setIsLogged ,setUsername} from "../../store/loginSlice";
+import { setSignUp } from "../../store/loginSlice";
 import { useDispatch } from "react-redux";
 import { useRef } from "react";
 
@@ -19,8 +19,8 @@ function Register() {
         password: passwordRef?.current.value,
       })
       .then((res) => {
-        dispatch(setUsername(res.data.username));
-        dispatch(setIsLogged(true));
+        // dispatch(setUsername(res.data.username));
+        // dispatch(setIsLogged(true));
       })
       .catch((e) => console.log(e));
   };

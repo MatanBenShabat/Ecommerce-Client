@@ -3,19 +3,13 @@ import "./login-page.css";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 
-import {
-  setIsLogged,
-  setSignUp,
-  userNameSelector,
-  setUsername,
-  setUserType,
-  setToken
-} from "../../store/loginSlice";
+import { setSignUp } from "../../store/loginSlice";
 import { useRef } from "react";
+import { useQueryClient } from "react-query";
 
 const LoginForm = () => {
   const dispatch = useDispatch();
-  const userName = useSelector(userNameSelector);
+  const queryclient = useQueryClient();
 
   const userNameRef = useRef();
   const passwordRef = useRef();
@@ -26,30 +20,35 @@ const LoginForm = () => {
       .post("http://localhost:5000/api-users/login", {
         email: userNameRef.current.value,
         password: passwordRef.current.value,
-      },{
-        withCredentials: true
-    })
+      })
       .then((result) => {
-        dispatch(setUsername(result.data.data.user.username))
-        setTimeout(dispatch(setIsLogged(true)),500)
-        dispatch(setUserType(result.data.data.user.userType))
-
-        })
-      .catch((error) => console.log(error))
-
-      
+        const loginData = {username:result.data.data.user.username,
+        userType : result.data.data.user.userType};
+        queryclient.setQueryData("user-data", () => {
+          return {
+            data: { data: loginData },
+          };
+        });
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
     <div className="login-container">
       <h1 className="login-h1">Login</h1>
       <form className="login-fieldes" onSubmit={handleLogin}>
-        <input className="log-input" placeholder="Username" ref={userNameRef} />
+        <input
+          className="log-input"
+          placeholder="Username"
+          ref={userNameRef}
+          defaultValue="seller@jonas.io"
+        />
         <input
           className="log-input"
           placeholder="Password"
           type="password"
           ref={passwordRef}
+          defaultValue="12345678"
         />
         <button className="login-btn">Login</button>
       </form>
@@ -61,7 +60,6 @@ const LoginForm = () => {
         >
           SIGN UP
         </button>
-        <h1>{userName}</h1>
       </div>
     </div>
   );

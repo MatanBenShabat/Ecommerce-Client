@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
-import { userNameSelector } from "../../store/loginSlice";
+import useGetUserData from "../../Hooks/useGetUserData";
 
 
 const Welcome = () => {
-  const name =useSelector(userNameSelector)
-  
-    return(
+const userData = useGetUserData()
+console.log(userData)
+
+  return(
         <div>
         <motion.div
           className="box"
@@ -22,7 +22,10 @@ const Welcome = () => {
             repeatDelay: 1,
           }}
         >
-            <h1>Welcome Back {localStorage.getItem("userName")}!</h1>
+            <h1>Welcome Back {userData.username}!</h1>
+            <button>Your Profile</button>
+            {userData.userType === "seller" && <button>Your Products</button>}
+            <button>Your Bids</button>
         </motion.div>
         </div>
     )

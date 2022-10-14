@@ -7,6 +7,7 @@ const xss = require("xss-clean");
 const hpp = require("hpp");
 const cookieParser = require("cookie-parser");
 
+
 const globalErrorHandler = require("./controllers/errorController");
 const usersRoutes = require("./routes/api-users");
 const productsRoutes = require("./routes/api-products");
@@ -14,9 +15,6 @@ const handle404 = require("./middlewares/handle404");
 const cors = require("cors");
 
 const app = express();
-const corsOptions = {
-  credentials: true,
-};
 
 // 1) GLOBAL MIDDLEWARES
 // Set security HTTP headers
@@ -51,8 +49,12 @@ app.use(
   })
 );
 
-app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+app.use(cors({credentials: true, origin: process.env.NODE_ENV === 'development'?'http://localhost:3000':process.env.SITE_URL}));
+
+
 app.use(cookieParser());
+
+
 
 // Serving static files
 app.use(express.static(`${__dirname}/public`));

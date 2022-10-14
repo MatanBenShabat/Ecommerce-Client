@@ -1,19 +1,15 @@
 import axios from "axios";
-import { useSelector } from "react-redux";
 import { useMutation } from "react-query";
 
 import "./products.css";
-import { userTypeSelector, userNameSelector } from "../../store/loginSlice";
 import React, { useRef } from "react";
 import socket from "../../socket/socket";
-import DeleteProduct from "./DeleteProduct";
+import useGetUserData from "../../Hooks/useGetUserData";
 
 const Product = ({ item, getProducts }) => {
+  const userData = useGetUserData()
   const ref = useRef();
-  const userType = useSelector(userTypeSelector);
-  const user = useSelector(userNameSelector);
 
-  // const token = localStorage.getItem("token");
 
   const handleDeleteSuccess = React.useCallback(() => {
     socket.emit("delete_product");
@@ -41,7 +37,7 @@ const Product = ({ item, getProducts }) => {
         `http://localhost:5000/api-products/products/${item._id}`,
         {
           currentBid: newBid,
-          currentBidder: user,
+          currentBidder: userData.username,
         },
         { withCredentials: true }
       );
@@ -66,7 +62,7 @@ const Product = ({ item, getProducts }) => {
       <h2>Price:{item.price}$</h2>
       <h2>Current Bid:{item.currentBid}$</h2>
       <h2>Current Bidder:{item.currentBidder}</h2>
-      {localStorage.getItem("isLogged") ? (
+      {/* {localStorage.getItem("isLogged") ? ( */}
         <form className="bid-container" onSubmit={handleSubmit}>
           <input
             placeholder="Place Bid..."
@@ -79,8 +75,8 @@ const Product = ({ item, getProducts }) => {
           {mutation.isSuccess && <h4>Your bid was placed successfully</h4>}
           {mutation.isSuccess && <h4>New bid is : {item.currentBid}$</h4>}
         </form>
-      ) : null}
-      {userType === "seller" || "admin" ? <button onClick={deleteMutation.mutate}>Delete</button>: null}
+      {/* ) : null} */}
+      {/* {userType === "seller" || "admin" ? <button onClick={deleteMutation.mutate}>Delete</button>: null} */}
     </li>
   );
 };

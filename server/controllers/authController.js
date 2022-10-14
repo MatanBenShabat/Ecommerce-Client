@@ -24,7 +24,6 @@ const createSendToken = (user, statusCode, res) => {
   };
   if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
   res.cookie("jwt", token, cookieOptions);
-  // res.header('Authorization', 'Bearer '+ token);
 
   //Removes password from the output
   user.password = undefined;
@@ -37,6 +36,20 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
+exports.startApp = (req, res, next) => {
+  res.status(200).json({
+    status: "success",
+    data: { username: req.user.username, userType: req.user.userType },
+  });
+};
+
+exports.logout = (req, res, next) => {
+  res.cookies["jwt"] = '';
+  res.status(200).json({
+    status: "success",
+  });
+};
+
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await Users.create({
     //Prevents from the user to select role(admin for exam) by himself-we get only what we need WITHOUT the users role
@@ -45,7 +58,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
-    userType: req.body.userType
+    userType: req.body.userType,
   });
   createSendToken(newUser, 201, res);
 });
@@ -73,15 +86,8 @@ exports.login = catchAsync(async (req, res, next) => {
 
 exports.protect = catchAsync(async (req, res, next) => {
   //1) Getting token and check of it's there
-  // let token;
-  // if (
-  //   req.headers.authorization &&
-  //   req.headers.authorization.startsWith("Bearer")
-  // ) {
-  //   token = req.headers.authorization.split(" ")[1];
-  // }
-  token = req.cookies["jwt"]
-  console.log(token);
+  token = req.cookies["jwt"];
+
   if (!token) {
     return next(
       new AppError("You are not logged in! Please log in to get access.", 401)

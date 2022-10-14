@@ -1,19 +1,17 @@
+import useGetUserData from "../../Hooks/useGetUserData";
 import LogOrReg from "../LogOrReg";
 import "./home-page.css";
-
-
-
+import Welcome from "./Welcome";
 
 function HomePage() {
-
+const userData = useGetUserData()  ;
 
   return (
     <div className="home-page-container">
       <div className="first-container">
-        <div className="first-header-container">
-        </div>
+        <div className="first-header-container"></div>
         <div className="login-home-container">
-          <LogOrReg/>
+          {userData ? <Welcome /> : <LogOrReg />}
         </div>
       </div>
       <div className="colors-container">

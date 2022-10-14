@@ -5,17 +5,25 @@ import LoginForm from "./Core-Components/Login/LoginForm";
 import NavBar from "./Core-Components/Nav-Bar/NavBar";
 import Products from "./Core-Components/Products/Products";
 import Register from "./Core-Components/Register/Register";
-import { QueryClient, QueryClientProvider } from "react-query";
-// import useLocalStorage from "./Hooks/useLocalStorage";
+import { useQuery } from "react-query";
+import axios from "axios";
+import React from "react";
 
-const queryClient = new QueryClient();
+const tryLogin = () => {
+  return axios.post(
+    "http://localhost:5000/api-users/startApp",
+  );
+};
 
 function App() {
-  // useLocalStorage();
-  return (
-    <QueryClientProvider client={queryClient}>
-      <NavBar></NavBar>
+   useQuery("user-data", tryLogin, {
+    refetchOnWindowFocus: false,
+    retry: false, // toDelete,
+  });
 
+  return (
+    <React.Fragment>
+      <NavBar></NavBar>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/products" element={<Products />} />
@@ -23,7 +31,7 @@ function App() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/contact-us" element={<ContactUs />} />
       </Routes>
-    </QueryClientProvider>
+    </React.Fragment>
   );
 }
 
