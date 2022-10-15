@@ -3,24 +3,34 @@ import axios from "axios";
 import { setSignUp } from "../../store/loginSlice";
 import { useDispatch } from "react-redux";
 import { useRef } from "react";
-
+import { useQueryClient } from "react-query";
 
 function Register() {
+  const queryclient = useQueryClient();
   const dispatch = useDispatch();
 
-  const userNameRef = useRef()
-  const passwordRef = useRef()
+  const userNameRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const passwordConfirmRef = useRef();
 
   const postRegisterDetails = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:5000/api-users/users", {
-        username :userNameRef?.current.value,
+      .post("http://localhost:5000/api-users/signup", {
+        username: userNameRef?.current.value,
+        email: emailRef?.current.value,
         password: passwordRef?.current.value,
+        passwordConfirm: passwordConfirmRef?.current.value,
       })
-      .then((res) => {
-        // dispatch(setUsername(res.data.username));
-        // dispatch(setIsLogged(true));
+      .then((result) => {
+        const loginData = {username:result.data.data.user.username,
+          userType : result.data.data.user.userType};
+          queryclient.setQueryData("user-data", () => {
+            return {
+              data: { data: loginData },
+            };
+          });
       })
       .catch((e) => console.log(e));
   };
@@ -40,20 +50,24 @@ function Register() {
 
           <input
             className="log-input"
+            placeholder="Email"
+            ref={emailRef}
+          ></input>
+
+          <input
+            className="log-input"
             placeholder="Password"
             type="password"
             ref={passwordRef}
-
           ></input>
           <input
             className="log-input"
             placeholder="Re-enter Password"
             type="password"
+            ref={passwordConfirmRef}
           ></input>
 
-          <button className="login-btn" >
-            Sign Up
-          </button>
+          <button className="login-btn">Sign Up</button>
         </form>
         <div className="sign-up-log">
           <h6>Already have an account?</h6>

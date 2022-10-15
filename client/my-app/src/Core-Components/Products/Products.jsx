@@ -4,7 +4,10 @@ import Product from "./Product";
 import AddProduct from "./AddProduct";
 import { useEffect } from "react";
 import socket from "../../socket/socket"
+import useGetUserData from "../../Hooks/useGetUserData";
 const Products = () => {
+
+  const userData = useGetUserData()
   const [products,getProducts] = useGetProducts();
 
 
@@ -20,7 +23,7 @@ const Products = () => {
       {products.map((item) => {
         return <Product item={item} key={item._id} getProducts={getProducts} />;
       })}
-            <AddProduct getProducts={getProducts}/>
+            { userData?.userType === "seller" && <AddProduct getProducts={getProducts}/>}
 
     </div>
   );

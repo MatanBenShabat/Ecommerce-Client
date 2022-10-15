@@ -40,8 +40,7 @@ if(!product) {
 });
 
 exports.createProduct = catchAsync(async (req, res, next) => {
-  newProduct = await Products.create(req.body);
-
+  const newProduct = await Products.create(req.body);
   res.status(201).json({
     status: "success",
     data: {

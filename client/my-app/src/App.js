@@ -1,35 +1,56 @@
-import { Route, Routes } from "react-router";
-import ContactUs from "./Core-Components/Contact-Us/ContactUs";
-import HomePage from "./Core-Components/Home-page/HomePage";
-import LoginForm from "./Core-Components/Login/LoginForm";
+import { Navigate, Route, Routes } from "react-router";
+import SignIn from "./Pages/SignInPage";
 import NavBar from "./Core-Components/Nav-Bar/NavBar";
 import Products from "./Core-Components/Products/Products";
 import Register from "./Core-Components/Register/Register";
 import { useQuery } from "react-query";
 import axios from "axios";
-import React from "react";
-
+import React, { Suspense } from "react";
+import WelcomePage from "./Pages/WelcomePage";
+import { CircularProgress, Grid } from "@mui/material";
+const SignUp = React.lazy(() => import("./Pages/SignUpPage"));
 const tryLogin = () => {
-  return axios.post(
-    "http://localhost:5000/api-users/startApp",
-  );
+  return axios.post("http://localhost:5000/api-users/startApp");
 };
 
 function App() {
-   useQuery("user-data", tryLogin, {
+  const { data, isLoading } = useQuery("user-data", tryLogin, {
     refetchOnWindowFocus: false,
     retry: false, // toDelete,
   });
+
+  if (isLoading) {
+    return (
+      <React.Fragment>
+        <NavBar></NavBar>
+        <Grid
+          container
+          spacing={0}
+          direction="column"
+          alignItems="center"
+          justifyContent="center"
+          style={{ minHeight: "100vh" }}
+        >
+          <Grid item xs={3}>
+            <CircularProgress />
+          </Grid>
+        </Grid>
+      </React.Fragment>
+    );
+  }
 
   return (
     <React.Fragment>
       <NavBar></NavBar>
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/*" element={<Navigate to="/" replace />} />
+        {!data && <Route path="/" element={
+          <SignIn />
+        }/>}
+        {!data && <Route path="/signup" element={<Suspense fallback={<h1>Loading...</h1>}><SignUp /></Suspense>} />}
+        {data && <Route path="/" element={<WelcomePage />} />}
         <Route path="/products" element={<Products />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/contact-us" element={<ContactUs />} />
       </Routes>
     </React.Fragment>
   );

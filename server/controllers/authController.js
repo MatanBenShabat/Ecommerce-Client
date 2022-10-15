@@ -21,6 +21,7 @@ const createSendToken = (user, statusCode, res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
+    sameSite: true,
   };
   if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
   res.cookie("jwt", token, cookieOptions);
@@ -44,9 +45,15 @@ exports.startApp = (req, res, next) => {
 };
 
 exports.logout = (req, res, next) => {
-  res.cookies["jwt"] = '';
-  res.status(200).json({
+  const cookieOptions = {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  };
+  if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
+  res.cookie("jwt", null, cookieOptions);
+  res.status(204).json({
     status: "success",
+    message: "logged out successfully",
   });
 };
 
@@ -58,7 +65,6 @@ exports.signup = catchAsync(async (req, res, next) => {
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
     passwordChangedAt: req.body.passwordChangedAt,
-    userType: req.body.userType,
   });
   createSendToken(newUser, 201, res);
 });
@@ -129,7 +135,6 @@ exports.restrictTo = (...userTypes) => {
         new AppError("You do not have permission to perform this action", 403)
       );
     }
-    console.log("success");
     next();
   };
 };

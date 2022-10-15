@@ -9,7 +9,7 @@ const ProductstScheme = mongoose.Schema({
     type: String,
     unique: [true, "Name already exists"],
     required: [true, "A product must have a name"],
-    minlength: [8," A productsname must have more or equal then 10 characters"],
+    minlength: [2," A productsname must have more or equal then 2 characters"],
     trim: true,
   },
   brand: {
@@ -34,9 +34,10 @@ const ProductstScheme = mongoose.Schema({
     default: null,
   },
   currentBidder: { type: String, default: "No One Yet" },
-  seller: { type: String, default: "No One Yet" },
+  seller: String,
   winner: { type: String, default: "No One Yet" },
   createDate: { type: Date, default: Date.now() },
+  endOfAuctionDate: { type:Date, default: Date.now() + 1000 * 60 * 60 * 24 * 3}
 });
 
 const Products = mongoose.model("Products", ProductstScheme);
