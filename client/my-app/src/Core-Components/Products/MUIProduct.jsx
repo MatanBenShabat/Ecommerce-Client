@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useMutation } from "react-query";
 
-import "./products.css";
 import React, { useRef, useState } from "react";
 import socket from "../../socket/socket";
 import useGetUserData from "../../Hooks/useGetUserData";

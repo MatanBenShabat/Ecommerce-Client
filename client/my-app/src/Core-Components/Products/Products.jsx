@@ -1,6 +1,4 @@
 import useGetProducts from "../../Hooks/useGetProducts";
-import "./products.css";
-import Product from "./Product";
 import AddProduct from "./AddProduct";
 import React, { useEffect, useState } from "react";
 import socket from "../../socket/socket";

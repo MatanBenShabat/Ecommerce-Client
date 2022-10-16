@@ -1,88 +1,106 @@
-import { useRef } from "react";
-import { useSelector } from "react-redux";
 import axios from "axios";
 import { useMutation } from "react-query";
 import React from "react";
 import socket from "../../socket/socket";
 import useGetUserData from "../../Hooks/useGetUserData";
-import { Button, Dialog, Slide } from "@mui/material";
+import { Button, Dialog, Slide, TextField } from "@mui/material";
+import { useForm, Controller } from "react-hook-form";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const AddProduct = ({ getProducts ,isOpen,handleClose}) => {
-  const userData =useGetUserData()
-  const imageRef = useRef();
-  const productNameRef = useRef();
-  const priceRef = useRef();
-  const brandRef = useRef();
-  const descriptionRef = useRef();
-  // const isLogged = useSelector(isLoggedSelector);
+const AddProduct = ({ getProducts, isOpen, handleClose }) => {
+  const userData = useGetUserData();
+  const { handleSubmit, control } = useForm();
 
   const handleSuccess = React.useCallback(() => {
     socket.emit("add_product");
     getProducts();
   }, [getProducts]);
 
+  const handleSubmitAdd = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    addItemMutation.mutate(data);
+    handleClose();
+  };
+
+  const onSubmit = (values) => console.log(values);
   const addItemMutation = useMutation(
-    ({ image, productsName, price, brand, description }) => {
+    (data) => {
       return axios.post("http://localhost:5000/api-products/products", {
-        image: image,
-        productsName: productsName,
-        price: price,
-        brand: brand,
-        description: description,
-        seller: userData.username
+        image: data.get("image"),
+        productsName: data.get("name"),
+        price: data.get("price"),
+        brand: data.get("brand"),
+        description: data.get("description"),
+        seller: userData.username,
       });
     },
     { onSuccess: handleSuccess }
   );
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    addItemMutation.mutate({
-      image: imageRef.current.value,
-      productsName: productNameRef.current.value,
-      price: priceRef.current.valueAsNumber,
-      brand: brandRef.current.value,
-      description: descriptionRef.current.value,
-    });
-
-    handleClose();
-    imageRef.current.value = '';
-    productNameRef.current.value = '';
-    priceRef.current.value = '';
-    brandRef.current.value = '';
-    descriptionRef.current.value = '';
-  };
   return (
     <Dialog
-    fullScreen
-    open={isOpen}
-    onClose={handleClose}
-    TransitionComponent={Transition}
-  >
-    <Button onClick={handleClose}>CLOSE</Button>
-    <form className="add-product-container" onSubmit={handleSubmit}>
+      fullScreen
+      open={isOpen}
+      onClose={handleClose}
+      TransitionComponent={Transition}
+    >
+      <Button onClick={handleClose}>CLOSE</Button>
+      <form className="add-product-container" onSubmit={handleSubmitAdd}>
         <h1>Product:</h1>
-        <input type="text" placeholder="Image Url..." ref={imageRef} />
-        <input type="text" placeholder="Enter Name..." ref={productNameRef} />
-        <input type="text" placeholder="Enter Brand..." ref={brandRef} />
-        <input type="text" placeholder="Enter Description..." ref={descriptionRef} />
-        <input type="number" placeholder="Enter Price ..." ref={priceRef} />
-        <button type="submit">Add</button>
+        <TextField
+          required
+          placeholder="Image Url..."
+          id="filled-required"
+          label="Image"
+          name="image"
+          autoComplete="image"
+          variant="filled"
+        />
+        <TextField
+          required
+          placeholder="Name..."
+          id="filled-required"
+          label="Product Name"
+          name="name"
+          autoComplete="name"
+          variant="filled"
+        />
+        <TextField
+          required
+          placeholder="Brand..."
+          id="filled-required"
+          label="Brand"
+          name="brand"
+          autoComplete="brand"
+          variant="filled"
+        />
+        <TextField
+          required
+          placeholder="Description..."
+          id="filled-required"
+          label="Description"
+          name="description"
+          autoComplete="description"
+          variant="filled"
+        />
+        <TextField
+          required
+          placeholder="Price..."
+          id="filled-required"
+          label="Price"
+          name="price"
+          autoComplete="price"
+          variant="filled"
+        />
+        <Button type="submit" size="small">
+          Add
+        </Button>
       </form>
-  </Dialog>
-      // <form className="add-product-container" onSubmit={handleSubmit}>
-      //   <h1>Product:</h1>
-      //   <input type="text" placeholder="Image Url..." ref={imageRef} />
-      //   <input type="text" placeholder="Enter Name..." ref={productNameRef} />
-      //   <input type="text" placeholder="Enter Brand..." ref={brandRef} />
-      //   <input type="text" placeholder="Enter Description..." ref={descriptionRef} />
-      //   <input type="number" placeholder="Enter Price ..." ref={priceRef} />
-      //   <button type="submit">Add</button>
-      // </form>
+    </Dialog>
   );
 };
 

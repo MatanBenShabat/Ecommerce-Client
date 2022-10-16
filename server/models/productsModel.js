@@ -40,5 +40,13 @@ const ProductstScheme = mongoose.Schema({
   endOfAuctionDate: { type:Date, default: Date.now() + 1000 * 60 * 60 * 24 * 3}
 });
 
+ProductstScheme.pre('findByIdAndUpdate', function (next) {
+  const data = this.getUpdate()
+
+  data.password = 'Teste Middleware'
+  this.update({}, data).exec()
+  next()
+})
+
 const Products = mongoose.model("Products", ProductstScheme);
 module.exports = Products;

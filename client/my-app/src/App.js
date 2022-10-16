@@ -2,7 +2,6 @@ import { Navigate, Route, Routes } from "react-router";
 import SignIn from "./Pages/SignInPage";
 import NavBar from "./Core-Components/Nav-Bar/NavBar";
 import Products from "./Core-Components/Products/Products";
-import Register from "./Core-Components/Register/Register";
 import { useQuery } from "react-query";
 import axios from "axios";
 import React, { Suspense } from "react";
@@ -50,7 +49,6 @@ function App() {
         {!data && <Route path="/signup" element={<Suspense fallback={<h1>Loading...</h1>}><SignUp /></Suspense>} />}
         {data && <Route path="/" element={<WelcomePage />} />}
         <Route path="/products" element={<Products />} />
-        <Route path="/register" element={<Register />} />
       </Routes>
     </React.Fragment>
   );
