@@ -15,6 +15,7 @@ import Savings from "@mui/icons-material/Savings";
 
 import axios from "axios";
 import { useQueryClient } from "react-query";
+import { redirect } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import useGetUserData from "../../Hooks/useGetUserData";
 import { Link } from "@mui/material";
@@ -33,6 +34,7 @@ const Navbar = () => {
   const handleLogout = () => {
     axios.post("http://localhost:5000/api-users/logout").then(
       queryClient.setQueryData("user-data", () => {
+        redirect("/");
         return null;
       })
     );
@@ -146,7 +148,9 @@ const Navbar = () => {
                 sx={{ my: 2, color: "white", display: "block" }}
               >
                 <Link component={NavLink} to={page.link}>
-                  <Typography textAlign="center" color={'white'}>{page.name}</Typography>
+                  <Typography textAlign="center" color={"white"}>
+                    {page.name}
+                  </Typography>
                 </Link>
               </Button>
             ))}

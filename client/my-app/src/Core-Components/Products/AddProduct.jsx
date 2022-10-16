@@ -5,8 +5,13 @@ import { useMutation } from "react-query";
 import React from "react";
 import socket from "../../socket/socket";
 import useGetUserData from "../../Hooks/useGetUserData";
+import { Button, Dialog, Slide } from "@mui/material";
 
-const AddProduct = ({ getProducts }) => {
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+const AddProduct = ({ getProducts ,isOpen,handleClose}) => {
   const userData =useGetUserData()
   const imageRef = useRef();
   const productNameRef = useRef();
@@ -44,6 +49,7 @@ const AddProduct = ({ getProducts }) => {
       description: descriptionRef.current.value,
     });
 
+    handleClose();
     imageRef.current.value = '';
     productNameRef.current.value = '';
     priceRef.current.value = '';
@@ -51,9 +57,14 @@ const AddProduct = ({ getProducts }) => {
     descriptionRef.current.value = '';
   };
   return (
-    <div>
-      {/* {isLogged ? ( */}
-      <form className="add-product-container" onSubmit={handleSubmit}>
+    <Dialog
+    fullScreen
+    open={isOpen}
+    onClose={handleClose}
+    TransitionComponent={Transition}
+  >
+    <Button onClick={handleClose}>CLOSE</Button>
+    <form className="add-product-container" onSubmit={handleSubmit}>
         <h1>Product:</h1>
         <input type="text" placeholder="Image Url..." ref={imageRef} />
         <input type="text" placeholder="Enter Name..." ref={productNameRef} />
@@ -62,8 +73,16 @@ const AddProduct = ({ getProducts }) => {
         <input type="number" placeholder="Enter Price ..." ref={priceRef} />
         <button type="submit">Add</button>
       </form>
-      {/* ) : null} */}
-    </div>
+  </Dialog>
+      // <form className="add-product-container" onSubmit={handleSubmit}>
+      //   <h1>Product:</h1>
+      //   <input type="text" placeholder="Image Url..." ref={imageRef} />
+      //   <input type="text" placeholder="Enter Name..." ref={productNameRef} />
+      //   <input type="text" placeholder="Enter Brand..." ref={brandRef} />
+      //   <input type="text" placeholder="Enter Description..." ref={descriptionRef} />
+      //   <input type="number" placeholder="Enter Price ..." ref={priceRef} />
+      //   <button type="submit">Add</button>
+      // </form>
   );
 };
 

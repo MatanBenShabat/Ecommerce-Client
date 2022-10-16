@@ -31,7 +31,7 @@ const ProductstScheme = mongoose.Schema({
   },
   currentBid: {
     type: Number,
-    default: null,
+    default: 0,
   },
   currentBidder: { type: String, default: "No One Yet" },
   seller: String,

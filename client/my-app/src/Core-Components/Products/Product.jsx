@@ -61,7 +61,7 @@ const Product = ({ item, getProducts }) => {
   // Change to from backend, based on userType
   if (
     new Date(item.endOfAuctionDate) < Date.now() &&
-    userData.username !== item.seller
+    userData?.username !== item.seller
   ) {
     return null;
   }
@@ -78,7 +78,7 @@ const Product = ({ item, getProducts }) => {
       <h2>{item.productsName}</h2>
       <h2>Buy now:{item.price}$</h2>
       <h2>Current Bid:{item.currentBid}$</h2>
-      {userData.username === item.seller && !winner && (
+      {userData?.username === item.seller && !winner && (
         <h2>Current Bidder:{item.currentBidder}</h2>
       )}
       <form className="bid-container" onSubmit={handleSubmit}>

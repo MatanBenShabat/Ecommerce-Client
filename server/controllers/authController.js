@@ -48,6 +48,7 @@ exports.logout = (req, res, next) => {
   const cookieOptions = {
     expires: new Date(Date.now()),
     httpOnly: true,
+    sameSite: true
   };
   if (process.env.NODE_ENV === "production") cookieOptions.secure = true;
   res.cookie("jwt", null, cookieOptions);
