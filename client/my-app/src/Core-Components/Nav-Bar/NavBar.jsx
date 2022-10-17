@@ -15,10 +15,12 @@ import Savings from "@mui/icons-material/Savings";
 
 import axios from "axios";
 import { useQueryClient } from "react-query";
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { NavLink } from "react-router-dom";
 import useGetUserData from "../../Hooks/useGetUserData";
 import { Link } from "@mui/material";
+import { useCallback } from "react";
+import { useMemo } from "react";
 
 const pages = [
   { name: "Home", link: "/" },
@@ -30,20 +32,28 @@ const Navbar = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const userData = useGetUserData();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
-  const handleLogout = () => {
-    axios.post("http://localhost:5000/api-users/logout").then(
+  const handleLogout = useCallback(async () => {
+    try {
+      await axios.post("http://localhost:5000/api-users/logout");
       queryClient.setQueryData("user-data", () => {
-        redirect("/");
         return null;
-      })
-    );
-  };
+      });
+      navigate("/");
+      console.log("logged oout");
+    } catch (error) {
+      console.log(error);
+    }
+  }, [axios, queryClient, navigate]);
 
-  const settings = [
-    { name: "Profile", function: () => {} },
-    { name: "Logout", function: handleLogout },
-  ];
+  const settings = useMemo(
+    () => [
+      { name: "Profile", function: () => {} },
+      { name: "Logout", function: handleLogout },
+    ],
+    [handleLogout]
+  );
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -197,37 +207,4 @@ const Navbar = () => {
   );
 };
 
-// const Navbar = () => {
-//   const userData = useGetUserData();
-//   const queryClient = useQueryClient();
-
-//   const handleLogout = () => {
-//     axios
-//       .post("http://localhost:5000/api-users/logout")
-//       .then(
-//         queryClient.setQueryData("user-data", () => {
-//           return null;
-//         })
-//       )
-//       .catch();
-//   };
-//   return (
-//     <header>
-//       <nav>
-//         <NavLink className="nav-btn" to="/">
-//           <strong>Home</strong>
-//         </NavLink>
-//         <NavLink className="nav-btn" to="/products">
-//           <strong>Products</strong>
-//         </NavLink>
-
-//         <NavLink className="nav-btn" to="/contact-us">
-//           <strong>Contact Us</strong>
-//         </NavLink>
-//         {userData && <button onClick={handleLogout}>LOGOUT</button>}
-//         <span></span>
-//       </nav>
-//     </header>
-//   );
-// };
 export default Navbar;

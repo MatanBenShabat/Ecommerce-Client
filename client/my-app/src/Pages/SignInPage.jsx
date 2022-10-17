@@ -38,16 +38,13 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
-  const userData = useGetUserData();
+  // const userData = useGetUserData();
   const queryclient = useQueryClient();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+
     axios
       .post("http://localhost:5000/api-users/login", {
         email: data.get("email"),
