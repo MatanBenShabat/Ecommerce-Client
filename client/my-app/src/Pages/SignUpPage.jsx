@@ -17,6 +17,19 @@ import useGetUserData from "../Hooks/useGetUserData";
 import axios from "axios";
 import { useQueryClient } from "react-query";
 
+import { useForm, Controller } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+const schema = yup.object().shape({
+  email: yup.string().email().required("Please enter email"),
+  username: yup.string().required("Please choose username").min(6).max(12),
+  password: yup.string().required("Please enter password").min(8).max(15),
+  passwordConfirm: yup.string().required("Please re-enter password")
+    .oneOf([yup.ref("password"), null], "Passwords must match")
+    .min(8)
+    .max(15),
+});
 function Copyright(props) {
   return (
     <Typography
@@ -41,19 +54,27 @@ export default function SignUp() {
   const userData = useGetUserData();
   const queryclient = useQueryClient();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+      username: "",
+      passwordConfirm: "",
+    },
+    resolver: yupResolver(schema),
+  });
+
+  const handleSubmitSignUp = (data) => {
     axios
       .post("http://localhost:5000/api-users/signup", {
-          email: data.get("email"),
-          username: data.get("username"),
-        password: data.get("password"),
-        passwordConfirm: data.get("passwordConfirm"),
+        email: data.email,
+        username: data.username,
+        password: data.password,
+        passwordConfirm: data.passwordConfirm,
       })
       .then((result) => {
         const loginData = {
@@ -109,48 +130,70 @@ export default function SignUp() {
             <Box
               component="form"
               noValidate
-              onSubmit={handleSubmit}
+              onSubmit={handleSubmit(handleSubmitSignUp)}
               sx={{ mt: 1 }}
             >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
+              <Controller
                 name="email"
-                autoComplete="email"
-                autoFocus
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    error={errors.email}
+                    helperText={errors.email?.message}
+                    label="Email Address*"
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                  />
+                )}
               />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="username"
-                label="Username"
+              <Controller
                 name="username"
-                autoComplete="username"
-                autoFocus
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    error={errors.username}
+                    helperText={errors.username?.message}
+                    label="Username*"
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                  />
+                )}
               />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
+              <Controller
                 name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    error={errors.password}
+                    helperText={errors.password?.message}
+                    label="Password*"
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    type="password"
+                  />
+                )}
               />
-                            <TextField
-                margin="normal"
-                required
-                fullWidth
+              <Controller
                 name="passwordConfirm"
-                label="Re-enter Password"
-                type="password"
-                id="passwordConfirm"
-                autoComplete="current-passwordConfirm"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    error={errors.passwordConfirm}
+                    helperText={errors.passwordConfirm?.message}
+                    label="Re-enter password*"
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    type="password"
+                  />
+                )}
               />
 
               <Button
@@ -168,11 +211,7 @@ export default function SignUp() {
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link
-                    component={ReactRouterLink}
-                    to={"/"}
-                    variant="body2"
-                  >
+                  <Link component={ReactRouterLink} to={"/"} variant="body2">
                     {"Already have an account? Sign In"}
                   </Link>
                 </Grid>

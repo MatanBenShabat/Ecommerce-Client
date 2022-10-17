@@ -24,13 +24,13 @@ router
   .patch("/updateMe", authController.protect, usersController.upadateMe)
   .delete("/deleteMe", authController.protect, usersController.deleteMe)
 
-  .get("/users", usersController.getUsers)
+  .get("/users", usersController.getUsers) //Development
   .post(
     "/users",
     UsersPostValidation,
     userExistsValidation,
     usersController.createUser
-  )
-  .delete("/users/?:id", usersController.deleteUser);
+  ) //Development-not working-delete
+  .delete("/users/?:id", authController.restrictTo("admin"),usersController.deleteUser);
 
 module.exports = router;

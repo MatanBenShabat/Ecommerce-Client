@@ -101,6 +101,7 @@ const MUIProduct = ({ item, getProducts }) => {
     winner = (
       <Typography variant="body2" color="text.secondary">
         Winner: {item.currentBidder}
+        <br /> Auction ended!
       </Typography>
     );
   }
@@ -130,7 +131,7 @@ const MUIProduct = ({ item, getProducts }) => {
           {item.description}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Auction ends at: {createDateStr(item.endOfAuctionDate)}
+        {!ended && "Auction ends at: " + createDateStr(item.endOfAuctionDate)}
         </Typography>
         {winner}
       </CardContent>

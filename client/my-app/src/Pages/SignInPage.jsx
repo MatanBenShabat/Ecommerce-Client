@@ -10,12 +10,20 @@ import Grid from "@mui/material/Grid";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useForm, Controller } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import { Link as ReactRouterLink } from "react-router-dom";
 
-import useGetUserData from "../Hooks/useGetUserData";
 import axios from "axios";
 import { useQueryClient } from "react-query";
+import { useState } from "react";
+
+const schema = yup.object().shape({
+  email: yup.string().email("Please enter valid email").required("Please enter email"),
+  password: yup.string().min(8).max(15).required("Please enter password"),
+});
 
 function Copyright(props) {
   return (
@@ -38,17 +46,26 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignIn() {
-  // const userData = useGetUserData();
+  const [err,setErr] = useState("")
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    resolver: yupResolver(schema),
+  });
+
   const queryclient = useQueryClient();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-
+  const handleSubmitSignIn = (data) => {
     axios
       .post("http://localhost:5000/api-users/login", {
-        email: data.get("email"),
-        password: data.get("password"),
+        email: data.email,
+        password: data.password,
       })
       .then((result) => {
         const loginData = {
@@ -61,7 +78,7 @@ export default function SignIn() {
           };
         });
       })
-      .catch((error) => console.log(error));
+      .catch((error) => setErr("Incorrect email or password"));
   };
 
   return (
@@ -104,29 +121,43 @@ export default function SignIn() {
             <Box
               component="form"
               noValidate
-              onSubmit={handleSubmit}
+              onSubmit={handleSubmit(handleSubmitSignIn)}
               sx={{ mt: 1 }}
             >
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
+              <Controller
                 name="email"
-                autoComplete="email"
-                autoFocus
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    error={errors.email}
+                    helperText={errors.email?.message}
+                    label="Email Address*"
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                  />
+                )}
               />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
+              <Controller
                 name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    error={errors.password}
+                    helperText={errors.password?.message}
+                    label="Password*"
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    type="password"
+                  />
+                )}
               />
+              <Typography component="h6" color={"red"} variant="h6" textAlign={"center"}>
+              {err}
+            </Typography>
 
               <Button
                 type="submit"
