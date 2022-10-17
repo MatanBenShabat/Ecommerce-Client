@@ -9,7 +9,7 @@ const ProductstScheme = mongoose.Schema({
     type: String,
     unique: [true, "Name already exists"],
     required: [true, "A product must have a name"],
-    minlength: [2," A productsname must have more or equal then 2 characters"],
+    minlength: [2, " A productsname must have more or equal then 2 characters"],
     trim: true,
   },
   brand: {
@@ -37,16 +37,16 @@ const ProductstScheme = mongoose.Schema({
   seller: String,
   winner: { type: String, default: "No One Yet" },
   createDate: { type: Date, default: Date.now() },
-  endOfAuctionDate: { type:Date, default: Date.now() + 1000 * 60 * 60 * 24 * 3}
+  endOfAuctionDate: { type: Date, default: Date.now() + 1000 * 60 * 60 * 24 * 3 }
 });
 
-ProductstScheme.pre('findByIdAndUpdate', function (next) {
-  const data = this.getUpdate()
+// ProductstScheme.pre('findByIdAndUpdate', function (next) {
+//   const data = this.getUpdate()
 
-  data.password = 'Teste Middleware'
-  this.update({}, data).exec()
-  next()
-})
+//   data.password = 'Teste Middleware'
+//   this.update({}, data).exec()
+//   next()
+// })
 
 const Products = mongoose.model("Products", ProductstScheme);
 module.exports = Products;
