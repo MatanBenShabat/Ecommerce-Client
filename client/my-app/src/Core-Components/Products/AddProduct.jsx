@@ -54,7 +54,8 @@ const AddProduct = ({ getProducts, isOpen, handleClose }) => {
     socket.emit("add_product");
     getProducts();
     reset();
-  }, [getProducts]);
+    window.scrollTo(0, 0);
+  }, [reset, getProducts]);
 
   const addItemMutation = useMutation(
     (data) => {

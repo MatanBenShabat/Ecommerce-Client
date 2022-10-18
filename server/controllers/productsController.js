@@ -71,20 +71,21 @@ exports.updateBid = catchAsync(async (req, res, next) => {
   const product = await Products.findById(req.params.id);
   if (!product) return next(new AppError("No product found with that ID", 404));
   if (!newBid) return next(new AppError("Please place bid!", 400));
-  const isHigher = await product.validation(
-    product.currentBid,
-    newBid.toString()
-  );
-  if (isHigher === false)
+
+  const isHigher = product.bidValidation(newBid);
+
+  if (!isHigher)
     return next(
       new AppError("The bid must be greater than the current bid", 406)
     );
+
   if (isHigher) {
     updatedProduct = await Products.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });
   }
+
   if (!updatedProduct) {
     return next(new AppError("No product found with that ID", 404));
   }
@@ -97,15 +98,18 @@ exports.updateBid = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteProduct = catchAsync(async (req, res, next) => {
-  const product = await Products.findOneAndDelete({ _id: req.params.id });
+  const product = await Products.findById(req.params.id);
 
   if (!product) {
     return next(new AppError("No product found with that ID", 404));
   }
 
+  await product
+    .allowDeletion(req.user.username)
+    .save({ validateModifiedOnly: true });
+
   res.status(204).json({
     status: "success",
-    data: null,
   });
 });
 

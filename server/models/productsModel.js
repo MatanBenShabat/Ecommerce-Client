@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const ProductstScheme = mongoose.Schema({
+const ProductsScheme = mongoose.Schema({
   image: {
     type: String,
     required: [true, "A product must have an image"],
@@ -37,25 +37,40 @@ const ProductstScheme = mongoose.Schema({
   seller: String,
   winner: { type: String, default: "No One Yet" },
   createDate: { type: Date, default: Date.now() },
+  isActive: { type: Boolean, default: true },
   endOfAuctionDate: {
     type: Date,
     default: Date.now() + 1000 * 60 * 60 * 24 * 3,
   },
 });
 
-ProductstScheme.methods.validation = async function (currentBid, newBid) {
+ProductsScheme.pre(/^find/, function (next) {
+  this.find({ isActive: { $ne: false } });
+
+  next();
+});
+
+ProductsScheme.methods.bidValidation = function (bid) {
   let isHigher = false;
-  if ((await currentBid) === 0) {
+  const newBid = bid.toString();
+  if (this.currentBid === 0) {
     return (isHigher = true);
   } else {
-    if ( currentBid < 100) {
-      isHigher = await currentBid + 5 < newBid;
+    if (this.currentBid < 100) {
+      isHigher = this.currentBid + 5 < newBid;
     } else {
-      isHigher = await currentBid + 50 < newBid;
+      isHigher = this.currentBid + 50 < newBid;
     }
     return isHigher;
   }
 };
 
-const Products = mongoose.model("Products", ProductstScheme);
+ProductsScheme.methods.allowDeletion = function (sellerName) {
+  if (sellerName === this.seller) {
+    this.isActive = false;
+  }
+  return this;
+};
+
+const Products = mongoose.model("Products", ProductsScheme);
 module.exports = Products;

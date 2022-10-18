@@ -41,11 +41,10 @@ const Navbar = () => {
         return null;
       });
       navigate("/");
-      console.log("logged oout");
     } catch (error) {
       console.log(error);
     }
-  }, [axios, queryClient, navigate]);
+  }, [queryClient, navigate]);
 
   const settings = useMemo(
     () => [
@@ -90,7 +89,7 @@ const Navbar = () => {
               textDecoration: "none",
             }}
           >
-            Auction House
+            House Of Auctions
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
@@ -148,7 +147,7 @@ const Navbar = () => {
               textDecoration: "none",
             }}
           >
-            Auction House
+            House Of Auctions
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page, i) => (
