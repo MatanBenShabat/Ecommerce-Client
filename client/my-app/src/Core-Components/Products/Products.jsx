@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import socket from "../../socket/socket";
 import useGetUserData from "../../Hooks/useGetUserData";
 import MUIProduct from "./MUIProduct";
-import { Button, Container, Grid, Snackbar } from "@mui/material";
+import { Button, Container, Grid, Skeleton, Snackbar } from "@mui/material";
 const Products = () => {
   const userData = useGetUserData();
   const [products, getProducts] = useGetProducts();
@@ -29,7 +29,7 @@ const Products = () => {
       getProducts();
     });
   }, [socket, getProducts]);
-
+  
   return (
     <Container maxWidth="sm" sx={{ marginTop: "50px" }}>
       <Grid container spacing={2}>
@@ -43,7 +43,8 @@ const Products = () => {
             </Grid>
           );
         })}
-      </Grid>
+        </Grid>
+        {/* <Skeleton variant="rectangular" width={210} height={118} /> */}
 
       {userData?.userType === "seller" && (
         <React.Fragment>

@@ -17,6 +17,7 @@ import {
   CardMedia,
   FilledInput,
   InputAdornment,
+  Skeleton,
   Snackbar,
   Tooltip,
   Typography,
@@ -84,10 +85,17 @@ const MUIProduct = ({ item, getProducts }) => {
     setBid(e.target.valueAsNumber);
   };
 
+  const handleDelete = () => {
+    deleteMutation.mutate(item._id)
+  }
+
   let ended;
   let winner;
+  let deleteButton;
   let cardSx = { maxWidth: 345 };
-  // Change to from backend, based on userType
+
+
+  // Change to from backend, based on userType and username
   if (
     new Date(item.endOfAuctionDate) < Date.now() &&
     userData?.username !== item.seller
@@ -103,6 +111,9 @@ const MUIProduct = ({ item, getProducts }) => {
         <br /> Auction ended!
       </Typography>
     );
+  }
+  if(userData?.username === item.seller){
+    deleteButton = <Button onClick={handleDelete}>Delete</Button>
   }
 
   return (
@@ -160,6 +171,7 @@ const MUIProduct = ({ item, getProducts }) => {
               >
                 <Button>Bid</Button>
               </Tooltip>
+              {deleteButton}
 
               <Button size="small" disabled>
                 Buy now for {item.price}
@@ -184,6 +196,7 @@ const MUIProduct = ({ item, getProducts }) => {
         </CardActions>
       )}
     </Card>
+    
   );
 };
 
