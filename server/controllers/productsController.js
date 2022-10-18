@@ -1,6 +1,6 @@
 const Products = require("../models/productsModel");
 const APIFeatures = require("../Utils/apiFeatures");
-const AppError = require('../Utils/appError')
+const AppError = require("../Utils/appError");
 const catchAsync = require("../Utils/catchAsync");
 
 exports.aliasTopProducts = (req, res, next) => {
@@ -27,16 +27,16 @@ exports.getProducts = catchAsync(async (req, res, next) => {
 
 exports.getProduct = catchAsync(async (req, res, next) => {
   const product = await Products.findById(req.params.id);
-if(!product) {
-  return next(new AppError('No product found with that ID',404))
-}
+  if (!product) {
+    return next(new AppError("No product found with that ID", 404));
+  }
 
   res.status(200).json({
-    status: 'success',
-    data:{
-      product
-    }
-  })
+    status: "success",
+    data: {
+      product,
+    },
+  });
 });
 
 exports.createProduct = catchAsync(async (req, res, next) => {
@@ -55,11 +55,39 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
     runValidators: true,
   });
 
-  if(!updatedProduct) {
-    return next(new AppError('No product found with that ID',404))
+  if (!updatedProduct) {
+    return next(new AppError("No product found with that ID", 404));
   }
-  
 
+  res.status(200).json({
+    status: "success",
+    data: {
+      product: updatedProduct,
+    },
+  });
+});
+exports.updateBid = catchAsync(async (req, res, next) => {
+  newBid = req.body.currentBid;
+  const product = await Products.findById(req.params.id);
+  if (!product) return next(new AppError("No product found with that ID", 404));
+  if (!newBid) return next(new AppError("Please place bid!", 400));
+  const isHigher = await product.validation(
+    product.currentBid,
+    newBid.toString()
+  );
+  if (isHigher === false)
+    return next(
+      new AppError("The bid must be greater than the current bid", 406)
+    );
+  if (isHigher) {
+    updatedProduct = await Products.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+  }
+  if (!updatedProduct) {
+    return next(new AppError("No product found with that ID", 404));
+  }
   res.status(200).json({
     status: "success",
     data: {
@@ -71,9 +99,9 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
 exports.deleteProduct = catchAsync(async (req, res, next) => {
   const product = await Products.findOneAndDelete({ _id: req.params.id });
 
-  if(!product) {
-    return next(new AppError('No product found with that ID',404))
-  }  
+  if (!product) {
+    return next(new AppError("No product found with that ID", 404));
+  }
 
   res.status(204).json({
     status: "success",

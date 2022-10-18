@@ -37,16 +37,25 @@ const ProductstScheme = mongoose.Schema({
   seller: String,
   winner: { type: String, default: "No One Yet" },
   createDate: { type: Date, default: Date.now() },
-  endOfAuctionDate: { type: Date, default: Date.now() + 1000 * 60 * 60 * 24 * 3 }
+  endOfAuctionDate: {
+    type: Date,
+    default: Date.now() + 1000 * 60 * 60 * 24 * 3,
+  },
 });
 
-// ProductstScheme.pre('findByIdAndUpdate', function (next) {
-//   const data = this.getUpdate()
-
-//   data.password = 'Teste Middleware'
-//   this.update({}, data).exec()
-//   next()
-// })
+ProductstScheme.methods.validation = async function (currentBid, newBid) {
+  let isHigher = false;
+  if ((await currentBid) === 0) {
+    return (isHigher = true);
+  } else {
+    if ( currentBid < 100) {
+      isHigher = await currentBid + 5 < newBid;
+    } else {
+      isHigher = await currentBid + 50 < newBid;
+    }
+    return isHigher;
+  }
+};
 
 const Products = mongoose.model("Products", ProductstScheme);
 module.exports = Products;
