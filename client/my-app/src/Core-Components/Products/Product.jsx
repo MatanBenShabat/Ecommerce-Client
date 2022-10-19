@@ -28,6 +28,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import GavelIcon from "@mui/icons-material/Gavel";
 
 import minBid from "../../utils/minBid";
+import SellerActions from "./SellerActions";
 
 const cardSx = {
   position: "relative",
@@ -174,7 +175,11 @@ const Product = ({ item, onDelete }) => {
         <Typography variant="body2" color="text.secondary">
           {item.description}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          mb={userIsSeller ? 10 : ""}
+        >
           {!ended && "Auction ends at: " + createDateStr(item.endOfAuctionDate)}
         </Typography>
         {ended && (
@@ -253,17 +258,7 @@ const Product = ({ item, onDelete }) => {
               )}
             </form>
           )}
-          {userIsSeller && (
-            <Fab
-              size="small"
-              color="primary"
-              aria-label="delete"
-              sx={{ position: "absolute", bottom: "10px", right: "10px" }}
-              onClick={handleDelete}
-            >
-              <DeleteIcon />
-            </Fab>
-          )}
+          {userIsSeller && <SellerActions handleDelete={handleDelete} />}
         </CardActions>
       )}
     </Card>
