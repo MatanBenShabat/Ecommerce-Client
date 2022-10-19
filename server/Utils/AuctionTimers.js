@@ -18,10 +18,10 @@ class AuctionTimersClass {
   createTimer(product) {
     const delay = this.calculateDelay(product.endOfAuctionDate);
     const timer = setTimeout(() => {
-      this.emitTimerEnded(product._id);
+      this.emitTimerEnded(product._id.valueOf());
     }, delay);
 
-    this.timers.set(product._id, timer);
+    this.timers.set(product._id.valueOf(), timer);
   }
 
   calculateDelay(date) {
@@ -31,8 +31,8 @@ class AuctionTimersClass {
   }
 
   cancleTimer(id) {
-    clearTimeout(this.timers.get(id));
-    this.timers.delete(id);
+    clearTimeout(this.timers.get(id.valueOf()));
+    this.timers.delete(id.valueOf());
   }
 
   addProduct(product) {

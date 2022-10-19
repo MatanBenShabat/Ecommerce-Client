@@ -113,6 +113,8 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
     .allowDeletion(req.user.username)
     .save({ validateModifiedOnly: true });
 
+  AuctionTimers.cancleTimer(product._id);
+
   res.status(204).json({
     status: "success",
   });
