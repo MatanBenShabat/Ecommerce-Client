@@ -16,7 +16,6 @@ import {
   CardHeader,
   CardMedia,
   Chip,
-  Fab,
   FilledInput,
   InputAdornment,
   Snackbar,
@@ -24,7 +23,6 @@ import {
   Typography,
 } from "@mui/material";
 import { blue } from "@mui/material/colors";
-import DeleteIcon from "@mui/icons-material/Delete";
 import GavelIcon from "@mui/icons-material/Gavel";
 
 import minBid from "../../utils/minBid";
@@ -208,12 +206,13 @@ const Product = ({ item, onDelete }) => {
                 }
               />
               <Tooltip
-                title={`At least ${
+                title={`At least $${
                   item.currentBid < 100
                     ? item.currentBid + 5
                     : item.currentBid + 50
                 }`}
-                placement="bottom-start"
+                placement="left-end"
+                arrow
               >
                 <ButtonGroup fullWidth>
                   <Button
