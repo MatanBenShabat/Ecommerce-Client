@@ -1,6 +1,7 @@
 const Products = require("../models/productsModel");
 const APIFeatures = require("../Utils/apiFeatures");
 const AppError = require("../Utils/appError");
+const AuctionTimers = require("../Utils/AuctionTimers");
 const catchAsync = require("../Utils/catchAsync");
 
 exports.aliasTopProducts = (req, res, next) => {
@@ -41,6 +42,9 @@ exports.getProduct = catchAsync(async (req, res, next) => {
 
 exports.createProduct = catchAsync(async (req, res, next) => {
   const newProduct = await Products.create(req.body);
+
+  AuctionTimers.addProduct(newProduct);
+
   res.status(201).json({
     status: "success",
     data: {
