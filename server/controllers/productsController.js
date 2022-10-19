@@ -68,9 +68,10 @@ exports.updateProduct = catchAsync(async (req, res, next) => {
 });
 exports.updateBid = catchAsync(async (req, res, next) => {
   newBid = req.body.currentBid;
+  if (!newBid) return next(new AppError("Please place bid!", 400));
+
   const product = await Products.findById(req.params.id);
   if (!product) return next(new AppError("No product found with that ID", 404));
-  if (!newBid) return next(new AppError("Please place bid!", 400));
 
   const isHigher = product.bidValidation(newBid);
 

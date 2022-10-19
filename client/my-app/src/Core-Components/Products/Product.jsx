@@ -1,7 +1,7 @@
 import axios from "axios";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import socket from "../../socket/socket";
 import useGetUserData from "../../Hooks/useGetUserData";
 import createDateStr from "../../utils/createDateStr";
@@ -15,32 +15,50 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
+  Chip,
   Fab,
   FilledInput,
   InputAdornment,
-  Skeleton,
   Snackbar,
   Tooltip,
   Typography,
 } from "@mui/material";
+import { blue } from "@mui/material/colors";
 import DeleteIcon from "@mui/icons-material/Delete";
+import GavelIcon from "@mui/icons-material/Gavel";
 
 import minBid from "../../utils/minBid";
 
-const Product = ({ item, getProducts, setOpenDeleteItem }) => {
+const cardSx = {
+  position: "relative",
+  width: "100%",
+  height: "100%",
+  overflow: "initial",
+};
+
+const Product = ({ item, onDelete }) => {
   const userData = useGetUserData();
+  const queryClient = useQueryClient();
+
   const [bid, setBid] = useState(0);
   const [openBid, setOpenBid] = useState(false);
+
+  const userIsSeller = userData?.username === item.seller;
+  const userIsCurrentBidder = userData?.username === item.currentBidder;
 
   const handleCloseBid = () => {
     setOpenBid(false);
   };
 
+  const handleBidChange = (e) => {
+    setBid(e.target.valueAsNumber);
+  };
+
   const handleDeleteSuccess = React.useCallback(() => {
     socket.emit("delete_product");
-    setOpenDeleteItem(true);
-    getProducts();
-  }, [getProducts, setOpenDeleteItem]);
+    onDelete(true);
+    queryClient.invalidateQueries("fetch-products");
+  }, [queryClient, onDelete]);
 
   const deleteMutation = useMutation(
     () => {
@@ -61,8 +79,8 @@ const Product = ({ item, getProducts, setOpenDeleteItem }) => {
     setBid(0);
     socket.emit("add_bid");
 
-    getProducts();
-  }, [getProducts]);
+    queryClient.invalidateQueries("fetch-products");
+  }, [queryClient]);
 
   const placeBidMutation = useMutation(
     (newBid) => {
@@ -80,40 +98,60 @@ const Product = ({ item, getProducts, setOpenDeleteItem }) => {
 
   const handlePlaceBidSubmit = (e) => {
     e.preventDefault();
+
+    if (userIsCurrentBidder) {
+      return;
+    }
+
     if (bid < minBid(item.currentBid)) {
       return;
     }
-    const changedBid = bid;
-
-    if (changedBid === "") return;
 
     placeBidMutation.mutate(bid);
   };
 
-  const handleBidChange = (e) => {
-    setBid(e.target.valueAsNumber);
-  };
-
-  let ended;
-  const userIsSeller = userData?.username === item.seller;
-  let cardSx = { maxWidth: 345, position: "relative" };
-
   // Change to from backend, based on userType and username
-  if (
-    new Date(item.endOfAuctionDate) < Date.now() &&
-    userData?.username !== item.seller
-  ) {
+  let ended;
+  if (new Date(item.endOfAuctionDate) < Date.now() && !userIsSeller) {
     return null;
   }
   //
 
   if (new Date(item.endOfAuctionDate) < Date.now()) {
-    cardSx.backgroundColor = "#4BB543";
     ended = true;
   }
 
   return (
     <Card sx={cardSx}>
+      {userIsCurrentBidder && (
+        <Chip
+          label="Active Bid"
+          color="success"
+          icon={<GavelIcon sx={{ fontSize: 15 }} />}
+          sx={{
+            position: "absolute",
+            top: "0",
+            right: "0",
+            transform: "translate(10%,-35%)",
+            boxShadow: "-3px -4px 0px inset rgb(0 0 0 / 20%)",
+            zIndex: "10",
+          }}
+        />
+      )}
+      {ended && (
+        <Chip
+          label="Auction Ended!"
+          color="success"
+          sx={{
+            position: "absolute",
+            top: "0",
+            right: "0",
+            transform: "translate(10%,-35%)",
+            boxShadow: "-3px -4px 0px inset rgb(0 0 0 / 20%)",
+            zIndex: "10",
+          }}
+        />
+      )}
       <CardHeader
         title={item.productsName}
         subheader={`Current Bid: $${item.currentBid}`}
@@ -155,31 +193,45 @@ const Product = ({ item, getProducts, setOpenDeleteItem }) => {
                 inputProps={{ min: minBid(item.currentBid) }}
                 type="number"
                 label="Place Bid..."
-                variant="outlined"
+                variant=""
                 onChange={handleBidChange}
                 fullWidth
+                disabled={userIsCurrentBidder}
+                sx={{ bgcolor: blue[50], lineHeight: 1.5 }}
                 startAdornment={
                   <InputAdornment position="start">$</InputAdornment>
                 }
               />
+              <Tooltip
+                title={`At least ${
+                  item.currentBid < 100
+                    ? item.currentBid + 5
+                    : item.currentBid + 50
+                }`}
+                placement="bottom-start"
+              >
+                <ButtonGroup fullWidth>
+                  <Button
+                    type="submit"
+                    disabled={userIsCurrentBidder}
+                    variant="contained"
+                    disableElevation
+                    sx={{ borderTopLeftRadius: 0 }}
+                  >
+                    Bid
+                  </Button>
+                  <Button
+                    size="small"
+                    disabled
+                    sx={{ borderTopRightRadius: 0 }}
+                  >
+                    Buy now for {item.price}
+                  </Button>
+                </ButtonGroup>
+              </Tooltip>
 
-              <ButtonGroup fullWidth>
-                <Tooltip
-                  title={`At least ${
-                    item.currentBid < 100
-                      ? item.currentBid + 5
-                      : item.currentBid + 50
-                  }`}
-                >
-                  <Button>Bid</Button>
-                </Tooltip>
-
-                <Button size="small" disabled>
-                  Buy now for {item.price}
-                </Button>
-              </ButtonGroup>
               {placeBidMutation.isLoading && (
-                <Alert severity="info">Loading...</Alert>
+                <Alert severity="info">Placing Bid...</Alert>
               )}
               <Snackbar
                 open={openBid}
@@ -195,7 +247,7 @@ const Product = ({ item, getProducts, setOpenDeleteItem }) => {
                 </Alert>
               </Snackbar>
               {placeBidMutation.isSuccess && openBid && (
-                <Alert severity="success" onClose={handleCloseBid}>
+                <Alert severity="info" onClose={handleCloseBid}>
                   New bid is : {item.currentBid}$
                 </Alert>
               )}

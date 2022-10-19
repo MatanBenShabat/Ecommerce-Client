@@ -13,7 +13,6 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import { Link as ReactRouterLink } from "react-router-dom";
 
-import useGetUserData from "../Hooks/useGetUserData";
 import axios from "axios";
 import { useQueryClient } from "react-query";
 
@@ -25,7 +24,9 @@ const schema = yup.object().shape({
   email: yup.string().email().required("Please enter email"),
   username: yup.string().required("Please choose username").min(6).max(12),
   password: yup.string().required("Please enter password").min(8).max(15),
-  passwordConfirm: yup.string().required("Please re-enter password")
+  passwordConfirm: yup
+    .string()
+    .required("Please re-enter password")
     .oneOf([yup.ref("password"), null], "Passwords must match")
     .min(8)
     .max(15),
@@ -51,7 +52,6 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
-  const userData = useGetUserData();
   const queryclient = useQueryClient();
 
   const {
@@ -61,8 +61,8 @@ export default function SignUp() {
   } = useForm({
     defaultValues: {
       email: "",
-      password: "",
       username: "",
+      password: "",
       passwordConfirm: "",
     },
     resolver: yupResolver(schema),
@@ -121,7 +121,7 @@ export default function SignUp() {
               alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <Avatar sx={{ m: 1, bgcolor: "info.main" }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
@@ -139,8 +139,8 @@ export default function SignUp() {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    error={errors.email}
-                    helperText={errors.email?.message}
+                    error={!!errors.email}
+                    helperText={errors.email?.message || " "}
                     label="Email Address*"
                     variant="outlined"
                     margin="normal"
@@ -154,8 +154,8 @@ export default function SignUp() {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    error={errors.username}
-                    helperText={errors.username?.message}
+                    error={!!errors.username}
+                    helperText={errors.username?.message || " "}
                     label="Username*"
                     variant="outlined"
                     margin="normal"
@@ -169,8 +169,8 @@ export default function SignUp() {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    error={errors.password}
-                    helperText={errors.password?.message}
+                    error={!!errors.password}
+                    helperText={errors.password?.message || " "}
                     label="Password*"
                     variant="outlined"
                     margin="normal"
@@ -185,8 +185,8 @@ export default function SignUp() {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    error={errors.passwordConfirm}
-                    helperText={errors.passwordConfirm?.message}
+                    error={!!errors.passwordConfirm}
+                    helperText={errors.passwordConfirm?.message || " "}
                     label="Re-enter password*"
                     variant="outlined"
                     margin="normal"
@@ -202,7 +202,7 @@ export default function SignUp() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                Sign Up
               </Button>
               <Grid container>
                 <Grid item xs>

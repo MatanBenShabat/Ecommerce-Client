@@ -1,94 +1,52 @@
-import useGetProducts from "../../Hooks/useGetProducts";
-import AddProduct from "./AddProduct";
+import { Grid } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { useQueryClient } from "react-query";
+import useGetProducts from "../../Hooks/useGetProducts";
 import socket from "../../socket/socket";
-import useGetUserData from "../../Hooks/useGetUserData";
-import Product from "./Product";
-import {
-  Alert,
-  Button,
-  Container,
-  Grid,
-  Skeleton,
-  Snackbar,
-} from "@mui/material";
+import renderProducts from "../../utils/renderProducts";
+import DeleteItemSnackbar from "../UI/DeleteItemSnackbar";
+import ProductsPageSkeleton from "../UI/ProductsPageSkeleton";
+
+const gridSX = {
+  marginTop: "30px",
+  marginBottom: "100px",
+  paddingRight: "10vw",
+  paddingLeft: "10vw",
+};
+
 const Products = () => {
-  const userData = useGetUserData();
-  const [products, getProducts] = useGetProducts();
-  const [open, setOpen] = useState(false);
-  const [openAddItem, setOpenAddItem] = useState(true);
+  const { products, isLoading } = useGetProducts();
+  const queryClient = useQueryClient();
   const [openDeleteItem, setOpenDeleteItem] = useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setOpenAddItem(true);
-  };
-
-  const handleCloseDeleteItem = () => {
-    openDeleteItem(false);
-  };
-
-  const handleAddItemClose = () => {
-    setOpenAddItem(false);
-  };
 
   useEffect(() => {
     socket.on("product_added", () => {
-      getProducts();
+      queryClient.invalidateQueries("fetch-products");
     });
-  }, [getProducts]);
+  }, [queryClient]);
+
+  const handleCloseDeleteItem = () => {
+    setOpenDeleteItem(false);
+  };
+
+  const handleDeleteItem = () => {
+    setOpenDeleteItem(true);
+  };
 
   return (
-    <Container maxWidth="sm" sx={{ marginTop: "50px" }}>
-      <Grid container spacing={2}>
-        {products.map((item) => {
-          return (
-            <Grid item xs={12} md={6} key={item._id}>
-              <Product
-                item={item}
-                getProducts={getProducts}
-                setOpenDeleteItem={setOpenDeleteItem}
-              />
-            </Grid>
-          );
-        })}
-      </Grid>
-      {/* <Skeleton variant="rectangular" width={210} height={118} /> */}
-
-      {userData?.userType === "seller" && (
-        <React.Fragment>
-          <AddProduct
-            getProducts={getProducts}
-            isOpen={open}
-            handleClose={handleClose}
-          />
-          <Snackbar
-            open={openAddItem}
-            onClick={handleAddItemClose}
-            anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-          >
-            <Button onClick={handleClickOpen}>Add Product</Button>
-          </Snackbar>
-          <Snackbar
-            open={openDeleteItem}
-            autoHideDuration={3000}
-            onClose={handleCloseDeleteItem}
-          >
-            <Alert
-              severity="success"
-              sx={{ width: "100%" }}
-              onClose={handleCloseDeleteItem}
-            >
-              Product deleted successfully!
-            </Alert>
-          </Snackbar>
-        </React.Fragment>
-      )}
-    </Container>
+    <Grid
+      container
+      rowSpacing={3}
+      columnSpacing={{ lg: 7, md: 5, sm: 4 }}
+      sx={gridSX}
+    >
+      {!isLoading && renderProducts(products, handleDeleteItem)}
+      {isLoading && <ProductsPageSkeleton />}
+      <DeleteItemSnackbar
+        open={openDeleteItem}
+        handleClose={handleCloseDeleteItem}
+      />
+    </Grid>
   );
 };
 

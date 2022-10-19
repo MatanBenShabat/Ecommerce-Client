@@ -50,19 +50,15 @@ ProductsScheme.pre(/^find/, function (next) {
   next();
 });
 
-ProductsScheme.methods.bidValidation = function (bid) {
+ProductsScheme.methods.bidValidation = function (newBid) {
   let isHigher = false;
-  const newBid = bid.toString();
-  if (this.currentBid === 0) {
-    return (isHigher = true);
+
+  if (this.currentBid < 100) {
+    isHigher = this.currentBid + 5 <= newBid;
   } else {
-    if (this.currentBid < 100) {
-      isHigher = this.currentBid + 5 < newBid;
-    } else {
-      isHigher = this.currentBid + 50 < newBid;
-    }
-    return isHigher;
+    isHigher = this.currentBid + 50 <= newBid;
   }
+  return isHigher;
 };
 
 ProductsScheme.methods.allowDeletion = function (sellerName) {

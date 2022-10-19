@@ -1,25 +1,20 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
-
+import { useQuery } from "react-query";
 
 const useGetProducts = () => {
-  const [products, setProducts] = useState([]);
-  
-  const getProducts = useCallback(() => {
-    axios
-      .get("http://localhost:5000/api-products/products",{
-        withCredentials: true
-    })
-      .then((res) => {
-        setProducts(res.data.data.products);
-      });
-  }, [setProducts]);
+  const { data, refetch, isLoading } = useQuery(
+    "fetch-products",
+    () => {
+      return axios.get("http://localhost:5000/api-products/products");
+    },
+    {
+      staleTime: 1 * 60 * 1000,
+    }
+  );
 
-  useEffect(() => {
-    getProducts();
-  }, [getProducts]);
+  const products = data?.data.data.products || [];
 
-  return [products, getProducts];
+  return { products, getProducts: refetch, isLoading };
 };
 
 export default useGetProducts;

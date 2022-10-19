@@ -21,8 +21,11 @@ import { useQueryClient } from "react-query";
 import { useState } from "react";
 
 const schema = yup.object().shape({
-  email: yup.string().email("Please enter valid email").required("Please enter email"),
-  password: yup.string().min(8).max(15).required("Please enter password"),
+  email: yup
+    .string()
+    .email("Please enter valid email")
+    .required("Please enter email"),
+  password: yup.string().required("Please enter password"),
 });
 
 // function Copyright(props) {
@@ -46,7 +49,7 @@ const schema = yup.object().shape({
 const theme = createTheme();
 
 export default function SignIn() {
-  const [err,setErr] = useState("")
+  const [err, setErr] = useState("");
   const {
     handleSubmit,
     control,
@@ -62,6 +65,7 @@ export default function SignIn() {
   const queryclient = useQueryClient();
 
   const handleSubmitSignIn = (data) => {
+    setErr("");
     axios
       .post("http://localhost:5000/api-users/login", {
         email: data.email,
@@ -78,7 +82,7 @@ export default function SignIn() {
           };
         });
       })
-      .catch((error) => setErr(error.response.data.message));//setErr("Incorrect email or password"));
+      .catch((error) => setErr(error.response.data.message)); //setErr("Incorrect email or password"));
   };
 
   return (
@@ -130,8 +134,8 @@ export default function SignIn() {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    error={errors.email}
-                    helperText={errors.email?.message}
+                    error={!!errors.email}
+                    helperText={errors.email?.message || " "}
                     label="Email Address*"
                     variant="outlined"
                     margin="normal"
@@ -145,8 +149,8 @@ export default function SignIn() {
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    error={errors.password}
-                    helperText={errors.password?.message}
+                    error={!!errors.password}
+                    helperText={errors.password?.message || " "}
                     label="Password*"
                     variant="outlined"
                     margin="normal"
@@ -155,9 +159,16 @@ export default function SignIn() {
                   />
                 )}
               />
-              <Typography component="h6" color={"red"} variant="h6" textAlign={"center"}>
-              {err}
-            </Typography>
+              {err && (
+                <Typography
+                  component="h6"
+                  color={"error"}
+                  variant="h6"
+                  textAlign={"center"}
+                >
+                  {err}
+                </Typography>
+              )}
 
               <Button
                 type="submit"
