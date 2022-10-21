@@ -16,7 +16,7 @@ import MailIcon from "@mui/icons-material/Mail";
 import React from "react";
 import useGetUserData from "../Hooks/useGetUserData";
 
-const drawerWidth = 600;
+const drawerWidth = 240;
 
 const WelcomePage = () => {
   const userData = useGetUserData();
