@@ -4,18 +4,28 @@ import NavBar from "./Core-Components/Nav-Bar/NavBar";
 import Products from "./Pages/ProductsPage";
 import { useQuery } from "react-query";
 import axios from "axios";
-import React, { Suspense } from "react";
+import React, { Suspense, useState } from "react";
 import WelcomePage from "./Pages/WelcomePage";
-import { CircularProgress, Grid } from "@mui/material";
+import { Alert, CircularProgress, Grid, Snackbar } from "@mui/material";
+import upperFirstLetter from "./utils/upperFirstLetter";
+
 const SignUp = React.lazy(() => import("./Pages/SignUpPage"));
+
 const tryLogin = () => {
   return axios.post("http://localhost:5000/api-users/startApp");
 };
 
 function App() {
+  const [open, setOpen] = useState(false);
+  const handleClose = () => setOpen(false);
+  const handleOpen = (data) => {
+    if (data) setOpen(true);
+  };
+
   const { data, isLoading } = useQuery("user-data", tryLogin, {
     refetchOnWindowFocus: false,
     retry: false, // toDelete,
+    onSuccess: handleOpen,
   });
 
   if (isLoading) {
@@ -37,7 +47,7 @@ function App() {
       </React.Fragment>
     );
   }
-
+  console.log(data, { open });
   return (
     <React.Fragment>
       <NavBar></NavBar>
@@ -57,6 +67,16 @@ function App() {
         {data && <Route path="/" element={<WelcomePage />} />}
         <Route path="/products" element={<Products />} />
       </Routes>
+      <Snackbar
+        open={open}
+        autoHideDuration={2000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert severity="success" sx={{ width: "100%" }}>
+          Welcome back {data && upperFirstLetter(data?.data.data.username)}
+        </Alert>
+      </Snackbar>
     </React.Fragment>
   );
 }
