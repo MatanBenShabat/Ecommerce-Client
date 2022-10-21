@@ -3,15 +3,6 @@ const AppError = require("../Utils/appError");
 const authorize = require("../Utils/authorize");
 const catchAsync = require("../Utils/catchAsync");
 
-
-const filterObj = (obj, ...allowedFields) => {
-  const newObj = {}
-  Object.keys(obj).forEach(el => {
-    if(allowedFields.includes(el)) newObj[el] = obj[el]
-  })
-  return newObj
-}
-
 exports.getUsers = catchAsync(async (req, res, next) => {
   const users = await Users.find({});
   res.status(200).json({
@@ -33,33 +24,35 @@ exports.upadateMe = catchAsync(async (req, res, next) => {
       )
     );
   }
+
+  const { name, email, photo } = req.body;
   // 2) Filtered out unwanted fields names that are not allowed to be updated
-  const filteredBody = filterObj(req.body, "username", "email")
+
+  // const filteredBody = filterObj(req.body, "username", "email")
 
   // 3) Upload users document
 
-  const updatedUser = await Users.findByIdAndUpdate(req.user.id, filteredBody, {
-    new: true,
-    runValidators: true,
-  });
+  const user = Object.assign(
+    req.user,
+    JSON.parse(JSON.stringify({ name, email, photo }))
+  );
 
   res.status(200).json({
     status: "success",
     data: {
-      user: updatedUser
-    }
+      user,
+    },
   });
 });
 
-exports.deleteMe = catchAsync(async(req,res,next) => {
-  await Users.findByIdAndUpdate(req.user.id, {active: false})
+exports.deleteMe = catchAsync(async (req, res, next) => {
+  await Users.findByIdAndUpdate(req.user.id, { active: false });
 
   res.status(204).json({
-    status:"success",
-    data: null
-  })
-})
-
+    status: "success",
+    data: null,
+  });
+});
 
 exports.createUser = (req, res, next) => {
   if (!req.body) res.json({ error: "invalid input" });

@@ -27,7 +27,7 @@ if (process.env.NODE_ENV === "development") {
 
 // Limit requests from same API
 const limiter = rateLimit({
-  max: 1000,
+  max: 100,
   windowMs: 60 * 60 * 1000,
   message: "Too many requests from this IP, please try again in an hour.",
 });
@@ -45,6 +45,7 @@ app.use(xss());
 // Prevent parameter pollution
 app.use(
   hpp({
+    //TODO: Might change
     whitelist: ["brand", "rating", "currentBid", "createDate", "price"],
   })
 );
@@ -54,15 +55,12 @@ app.use(cors({credentials: true, origin: process.env.NODE_ENV === 'development'?
 
 app.use(cookieParser());
 
-
-
 // Serving static files
 app.use(express.static(`${__dirname}/public`));
 
 // Test middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-  // console.log(req.headers);
   next();
 });
 

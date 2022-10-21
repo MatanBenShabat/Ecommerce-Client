@@ -21,11 +21,6 @@ router
     authController.restrictTo("admin", "seller"),
     productsController.createProduct
   )
-  // .patch(
-  //   "/products/:id",
-  //   authController.protect,
-  //   productsController.updateProduct
-  // )
   .patch(
     "/products/:id",
     authController.protect,

@@ -35,7 +35,7 @@ const ProductsScheme = mongoose.Schema({
   },
   currentBidder: { type: String, default: "No One Yet" },
   seller: String,
-  winner: { type: String, default: "No One Yet" },
+  winner: { type: String, default: "No bidders for this product" },
   createDate: { type: Date, default: Date.now() },
   isActive: { type: Boolean, default: true },
   endOfAuctionDate: {
