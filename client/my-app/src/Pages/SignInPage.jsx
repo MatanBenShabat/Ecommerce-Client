@@ -28,7 +28,6 @@ const schema = yup.object().shape({
   password: yup.string().required("Please enter password"),
 });
 
-
 const theme = createTheme();
 
 export default function SignIn() {
@@ -163,7 +162,11 @@ export default function SignIn() {
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
+                  <Link
+                    component={ReactRouterLink}
+                    to={"/forgotpassword"}
+                    variant="body2"
+                  >
                     Forgot password?
                   </Link>
                 </Grid>

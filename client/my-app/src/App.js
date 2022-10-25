@@ -8,6 +8,7 @@ import React, { Suspense, useState } from "react";
 import WelcomePage from "./Pages/WelcomePage";
 import { Alert, CircularProgress, Grid, Snackbar } from "@mui/material";
 import upperFirstLetter from "./utils/upperFirstLetter";
+import ForgotPassword from "./Pages/ForgotPassword";
 
 const SignUp = React.lazy(() => import("./Pages/SignUpPage"));
 
@@ -64,6 +65,7 @@ function App() {
             }
           />
         )}
+        {!data && <Route path="/forgotpassword" element={<ForgotPassword />} />}
         {data && <Route path="/" element={<WelcomePage />} />}
         <Route path="/products" element={<Products />} />
       </Routes>
