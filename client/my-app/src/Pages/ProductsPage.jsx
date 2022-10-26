@@ -1,7 +1,6 @@
 import React from "react";
 import useGetUserData from "../Hooks/useGetUserData";
 import Products from "../Core-Components/Products/Products";
-
 import AddProduct from "../Core-Components/Products/AddProduct";
 
 const ProductsPage = () => {

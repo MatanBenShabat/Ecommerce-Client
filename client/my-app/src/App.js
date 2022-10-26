@@ -12,6 +12,7 @@ import ForgotPassword from "./Pages/ForgotPassword";
 import Loading from "./Loading";
 import ResetPassword from "./Pages/ResetPassword";
 
+
 const SignUp = React.lazy(() => import("./Pages/SignUpPage"));
 
 const tryLogin = () => {

@@ -6,6 +6,14 @@ import socket from "../../socket/socket";
 import renderProducts from "../../utils/renderProducts";
 import DeleteItemSnackbar from "../UI/DeleteItemSnackbar";
 import ProductsPageSkeleton from "../UI/ProductsPageSkeleton";
+import Lottie from "react-lottie";
+import animationNoProducts from "../../assets/lotties/no-product.json";
+
+const lottieOptions = {
+  loop: true,
+  autoplay: true,
+  animationData: animationNoProducts,
+};
 
 const gridSX = {
   marginTop: "30px",
@@ -40,7 +48,12 @@ const Products = () => {
       columnSpacing={{ lg: 7, md: 5, sm: 4 }}
       sx={gridSX}
     >
-      {!isLoading && renderProducts(products, handleDeleteItem)}
+      {!isLoading &&
+        products?.length > 0 &&
+        renderProducts(products, handleDeleteItem)}
+      {!isLoading && products?.length === 0 && (
+        <Lottie options={lottieOptions} height={400} width={400} />
+      )}
       {isLoading && <ProductsPageSkeleton />}
       <DeleteItemSnackbar
         open={openDeleteItem}

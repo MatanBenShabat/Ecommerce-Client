@@ -2,6 +2,7 @@ import { Grid } from "@mui/material";
 import React from "react";
 import Product from "../Core-Components/Products/Product";
 
+
 const renderProducts = (products, handleDelete) => {
   return products.map((item) => {
     return (
