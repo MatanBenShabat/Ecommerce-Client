@@ -9,6 +9,8 @@ import WelcomePage from "./Pages/WelcomePage";
 import { Alert, CircularProgress, Grid, Snackbar } from "@mui/material";
 import upperFirstLetter from "./utils/upperFirstLetter";
 import ForgotPassword from "./Pages/ForgotPassword";
+import Loading from "./Loading";
+import ResetPassword from "./Pages/ResetPassword";
 
 const SignUp = React.lazy(() => import("./Pages/SignUpPage"));
 
@@ -48,10 +50,9 @@ function App() {
       </React.Fragment>
     );
   }
-  console.log(data, { open });
   return (
     <React.Fragment>
-      <NavBar></NavBar>
+      <NavBar/>
       <Routes>
         <Route path="/*" element={<Navigate to="/" replace />} />
         {!data && <Route path="/" element={<SignIn />} />}
@@ -59,13 +60,14 @@ function App() {
           <Route
             path="/signup"
             element={
-              <Suspense fallback={<h1>Loading...</h1>}>
+              <Suspense fallback={<Loading/>}>
                 <SignUp />
               </Suspense>
             }
           />
         )}
         {!data && <Route path="/forgotpassword" element={<ForgotPassword />} />}
+        {!data && <Route path="/resetpassword/:token" element={<ResetPassword />} />}
         {data && <Route path="/" element={<WelcomePage />} />}
         <Route path="/products" element={<Products />} />
       </Routes>

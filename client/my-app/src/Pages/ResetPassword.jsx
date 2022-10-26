@@ -1,4 +1,4 @@
-import { flushSync } from "react";
+import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -19,32 +19,41 @@ import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { Alert, Snackbar } from "@mui/material";
 import { useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import Loading from "../Loading";
 
 const schema = yup.object().shape({
-  email: yup.string().email().required("Please enter email"),
+    password: yup.string().required("Please enter password").min(8).max(15),
+    passwordConfirm: yup
+      .string()
+      .required("Please re-enter password")
+      .oneOf([yup.ref("password"), null], "Passwords must match")
+      .min(8)
+      .max(15),
 });
 
 const theme = createTheme();
 
-export default function ForgotPassword() {
+export default function ResetPassword() {
   const [open, setOpen] = useState(false);
   const [alert, setAlert] = useState({ message: "", severity: "success" });
+  const {token} = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient()
 
   const {
     mutate: sendRequest,
     isLoading,
     isError,
   } = useMutation(
-    "forgot-password",
-    (email) => {
-      return axios.post("http://localhost:5000/api-users/forgotPassword", {
-        email,
+    "reset-password",
+    (data) => {
+      return axios.patch(`http://localhost:5000/api-users/resetPassword/${token}`, {
+        password: data.password,
+        passwordConfirm: data.passwordConfirm,
       });
     },
     {
@@ -63,12 +72,13 @@ export default function ForgotPassword() {
       onSuccess: () => {
         setOpen(true);
         setAlert({
-          message: "Your email was sent successfully!",
+          message: "Your password changed successfully!",
           severity: "success",
         });
       },
     }
   );
+  
 
   const {
     handleSubmit,
@@ -76,21 +86,24 @@ export default function ForgotPassword() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: "",
+      password: "",
+      passwordConfirm: "",
     },
     resolver: yupResolver(schema),
   });
+  const handleSubmitResetPassword = (data) => {
+    sendRequest(data)
+  };
 
   const handleClose = () => {
     setOpen(false);
     if (!isError) {
       navigate("/");
+      queryClient.invalidateQueries("user-data")
     }
   };
 
-  const handleSubmitForgotPassword = (data) => {
-    sendRequest(data.email);
-  };
+ 
 
   if (isLoading) {
     return <Loading />;
@@ -98,6 +111,7 @@ export default function ForgotPassword() {
 
   return (
     <ThemeProvider theme={theme}>
+      <CssBaseline />
       <Grid
         item
         xs={false}
@@ -119,19 +133,22 @@ export default function ForgotPassword() {
             justifyContent: "space-around",
             flexDirection: "column",
             alignItems: "center",
-            height: "50vh",
+            height: "max",
           }}
         >
-          <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
+          <Snackbar
+            open={open}
+            autoHideDuration={2000}
+            onClose={handleClose}
+          >
             <Alert
-              severity={alert.severity}
+            severity={alert.severity}
               sx={{ width: "100%" }}
               onClose={handleClose}
             >
-              {alert.message}
+             {alert.message}
             </Alert>
           </Snackbar>
-            
           <Avatar sx={{ m: 1, bgcolor: "info.main" }}>
             <LockOutlinedIcon />
           </Avatar>
@@ -142,20 +159,37 @@ export default function ForgotPassword() {
             component="form"
             noValidate
             sx={{ mt: 1 }}
-            onSubmit={handleSubmit(handleSubmitForgotPassword)}
+            onSubmit={handleSubmit(handleSubmitResetPassword)}
           >
             <Controller
-              name="email"
+              name="password"
               control={control}
               render={({ field }) => (
                 <TextField
                   {...field}
-                  error={!!errors.email}
-                  helperText={errors.email?.message || " "}
-                  label="Email Address*"
+                  error={!!errors.password}
+                  helperText={errors.password?.message || " "}
+                  label="New Password*"
                   variant="outlined"
                   margin="normal"
                   fullWidth
+                  type="password"
+                />
+              )}
+            />
+            <Controller
+              name="passwordConfirm"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  error={!!errors.passwordConfirm}
+                  helperText={errors.passwordConfirm?.message || " "}
+                  label="Re-enter Password*"
+                  variant="outlined"
+                  margin="normal"
+                  fullWidth
+                  type="password"
                 />
               )}
             />
@@ -165,7 +199,7 @@ export default function ForgotPassword() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Send Email
+              Change Password
             </Button>
           </Box>
         </Box>
