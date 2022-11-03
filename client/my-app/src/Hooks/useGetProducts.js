@@ -11,7 +11,6 @@ const useGetProducts = () => {
       staleTime: 1 * 60 * 1000,
     }
   );
-
   const products = data?.data.data.products || [];
 
   return { products, getProducts: refetch, isLoading };

@@ -30,7 +30,7 @@ const LoginForm = () => {
           };
         });
       })
-      .catch((error) => console.log(error));
+      // .catch((error));// shouldhandle
   };
 
   return (

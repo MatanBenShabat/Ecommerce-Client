@@ -8,7 +8,6 @@ const SignUpValidation = (req, res, next) => {
 
   const { value, error } = result;
 
-  console.log(error);
   const valid = (error == null);
   if (!valid) {
     return next(new AppError(error.message, 400))

@@ -133,6 +133,7 @@ exports.getProductsStats = catchAsync(async (req, res, next) => {
         avgPrice: { $avg: "$price" },
         minPrice: { $min: "$price" },
         maxPrice: { $max: "$price" },
+        products: {$push: "$productsName"}
       },
     },
     {

@@ -8,6 +8,7 @@ import DeleteItemSnackbar from "../UI/DeleteItemSnackbar";
 import ProductsPageSkeleton from "../UI/ProductsPageSkeleton";
 import Lottie from "react-lottie";
 import animationNoProducts from "../../assets/lotties/no-product.json";
+import FilteringBar from "./FilteringBar";
 
 const lottieOptions = {
   loop: true,
@@ -42,24 +43,27 @@ const Products = () => {
   };
 
   return (
-    <Grid
-      container
-      rowSpacing={3}
-      columnSpacing={{ lg: 7, md: 5, sm: 4 }}
-      sx={gridSX}
-    >
-      {!isLoading &&
-        products?.length > 0 &&
-        renderProducts(products, handleDeleteItem)}
-      {!isLoading && products?.length === 0 && (
-        <Lottie options={lottieOptions} height={400} width={400} />
-      )}
-      {isLoading && <ProductsPageSkeleton />}
-      <DeleteItemSnackbar
-        open={openDeleteItem}
-        handleClose={handleCloseDeleteItem}
-      />
-    </Grid>
+    <>
+      <FilteringBar />
+      <Grid
+        container
+        rowSpacing={3}
+        columnSpacing={{ lg: 7, md: 5, sm: 4 }}
+        sx={gridSX}
+      >
+        {!isLoading &&
+          products?.length > 0 &&
+          renderProducts(products, handleDeleteItem)}
+        {!isLoading && products?.length === 0 && (
+          <Lottie options={lottieOptions} height={400} width={400} />
+        )}
+        {isLoading && <ProductsPageSkeleton />}
+        <DeleteItemSnackbar
+          open={openDeleteItem}
+          handleClose={handleCloseDeleteItem}
+        />
+      </Grid>
+    </>
   );
 };
 

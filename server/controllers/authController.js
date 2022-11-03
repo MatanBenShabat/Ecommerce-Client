@@ -115,7 +115,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
   //4) Check if user changed password after the token was issued
   if (currentUser.changedPasswordAfer(decoded.iat)) {
-    console.log("REACHED HERE", decoded.iat);
+    // console.log("REACHED HERE", decoded.iat);
     return next(
       new AppError(
         "User recently changed his Password/Email/Username. Please login again.",
@@ -131,7 +131,6 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 exports.restrictTo = (...userTypes) => {
   return (req, res, next) => {
-    // console.log(req.user);
     if (!userTypes.includes(req.user.userType)) {
       return next(
         new AppError("You do not have permission to perform this action", 403)
@@ -166,7 +165,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
       email: user.email,
       subject: "Your password reset token (valid for 10 min)",
       message,
-      resetToken
     });
 
     res.status(200).json({
