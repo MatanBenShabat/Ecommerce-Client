@@ -1,0 +1,20 @@
+{
+  "name": "ecommercesite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "concurrently cd server \"npm run build \""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MatanBenShabat/Ecommerce.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MatanBenShabat/Ecommerce/issues"
+  },
+  "homepage": "https://github.com/MatanBenShabat/Ecommerce#readme"
+}
