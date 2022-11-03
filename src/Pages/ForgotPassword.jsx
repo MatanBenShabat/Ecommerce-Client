@@ -1,7 +1,7 @@
-import { flushSync } from "react";
+// import { flushSync } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
+// import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 // import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
@@ -22,7 +22,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router";
 import { Alert, Snackbar } from "@mui/material";
 import { useState } from "react";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import Loading from "../Loading";
 
 const schema = yup.object().shape({
@@ -43,7 +43,7 @@ export default function ForgotPassword() {
   } = useMutation(
     "forgot-password",
     (email) => {
-      return axios.post("http://localhost:5000/api-users/forgotPassword", {
+      return axios.post(`${process.env.REACT_APP_URL}/api-users/forgotPassword`, {
         email,
       });
     },

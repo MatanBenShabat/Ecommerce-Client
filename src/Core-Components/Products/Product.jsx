@@ -62,7 +62,7 @@ const Product = ({ item, onDelete }) => {
   const deleteMutation = useMutation(
     () => {
       return axios.delete(
-        `http://localhost:5000/api-products/products/${item._id}`,
+        `${process.env.REACT_APP_URL}/api-products/products/${item._id}`,
         { withCredentials: true }
       );
     },
@@ -84,7 +84,7 @@ const Product = ({ item, onDelete }) => {
   const placeBidMutation = useMutation(
     (newBid) => {
       return axios.patch(
-        `http://localhost:5000/api-products/products/${item._id}`,
+        `${process.env.REACT_APP_URL}/api-products/products/${item._id}`,
         {
           currentBid: newBid,
           currentBidder: userData.username,

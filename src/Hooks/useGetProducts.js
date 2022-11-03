@@ -5,7 +5,7 @@ const useGetProducts = () => {
   const { data, refetch, isLoading } = useQuery(
     "fetch-products",
     () => {
-      return axios.get("http://localhost:5000/api-products/products");
+      return axios.get(`${process.env.REACT_APP_URL}/api-products/products`);
     },
     {
       staleTime: 1 * 60 * 1000,

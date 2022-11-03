@@ -22,7 +22,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate, useParams } from "react-router";
 import { Alert, Snackbar } from "@mui/material";
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import Loading from "../Loading";
 
 const schema = yup.object().shape({
@@ -51,7 +51,7 @@ export default function ResetPassword() {
   } = useMutation(
     "reset-password",
     (data) => {
-      return axios.patch(`http://localhost:5000/api-users/resetPassword/${token}`, {
+      return axios.patch(`${process.env.REACT_APP_URL}/api-users/resetPassword/${token}`, {
         password: data.password,
         passwordConfirm: data.passwordConfirm,
       });
