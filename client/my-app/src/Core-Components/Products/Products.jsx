@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Alert, Grid, Snackbar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useQueryClient } from "react-query";
 import useGetProducts from "../../Hooks/useGetProducts";
@@ -9,6 +9,8 @@ import ProductsPageSkeleton from "../UI/ProductsPageSkeleton";
 import Lottie from "react-lottie";
 import animationNoProducts from "../../assets/lotties/no-product.json";
 import FilteringBar from "./FilteringBar";
+import { useDispatch, useSelector } from "react-redux";
+import { setOpenSnackBar, snackBarSelector } from "../../store/snackBarSlice";
 
 const lottieOptions = {
   loop: true,
@@ -27,6 +29,8 @@ const Products = () => {
   const { products, isLoading } = useGetProducts();
   const queryClient = useQueryClient();
   const [openDeleteItem, setOpenDeleteItem] = useState(false);
+  const snackBarOpened = useSelector(snackBarSelector);
+  const dispatch = useDispatch()
 
   useEffect(() => {
     socket.on("product_added", () => {
@@ -41,10 +45,37 @@ const Products = () => {
   const handleDeleteItem = () => {
     setOpenDeleteItem(true);
   };
-
+  const handleCloseSnackBar = () => dispatch(setOpenSnackBar(false))
+  console.log(snackBarOpened);
   return (
     <>
-      <FilteringBar />
+        <Snackbar
+          open={snackBarOpened}
+          autoHideDuration={2000}
+          onClose={handleCloseSnackBar}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        >
+          <Alert severity="success" sx={{ width: "100%" }}>
+            Your Product Was Added Successfully
+          </Alert>
+        </Snackbar>
+      {!isLoading && products?.length > 0 && <FilteringBar />}
+      {!isLoading && products?.length === 0 && (
+        <Grid
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            textAlign: "center",
+            color: "#2196f3",
+            alignItems: "center",
+          }}
+        >
+          <Grid>
+            <Lottie options={lottieOptions} height={400} width={400} />
+            <h1>No Products Found</h1>
+          </Grid>
+        </Grid>
+      )}
       <Grid
         container
         rowSpacing={3}
@@ -54,9 +85,6 @@ const Products = () => {
         {!isLoading &&
           products?.length > 0 &&
           renderProducts(products, handleDeleteItem)}
-        {!isLoading && products?.length === 0 && (
-          <Lottie options={lottieOptions} height={400} width={400} />
-        )}
         {isLoading && <ProductsPageSkeleton />}
         <DeleteItemSnackbar
           open={openDeleteItem}

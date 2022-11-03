@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "react-query";
 import React from "react";
 import socket from "../../socket/socket";
 import useGetUserData from "../../Hooks/useGetUserData";
+import {useDispatch} from 'react-redux'
 import {
   Button,
   Container,
@@ -15,6 +16,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { setOpenSnackBar } from "../../store/snackBarSlice";
 
 const schema = yup.object().shape({
   productsName: yup
@@ -38,6 +40,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const AddProductForm = ({ isOpen, handleClose }) => {
   const userData = useGetUserData();
   const queryClient = useQueryClient();
+  const dispatch = useDispatch();
+
 
   const {
     handleSubmit,
@@ -61,7 +65,9 @@ const AddProductForm = ({ isOpen, handleClose }) => {
     queryClient.invalidateQueries("fetch-products");
     reset();
     window.scrollTo(0, 0);
-  }, [reset, queryClient]);
+    dispatch(setOpenSnackBar(true))
+
+  }, [reset, queryClient, dispatch]);
 
   const addItemMutation = useMutation(
     (data) => {

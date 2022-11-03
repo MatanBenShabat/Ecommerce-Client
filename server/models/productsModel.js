@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const AppError = require("../Utils/appError");
 const ProductsScheme = mongoose.Schema(
   {
     image: {
@@ -57,11 +58,11 @@ ProductsScheme.virtual("priceInShekels").get(function () {
   return this.price * 3.14;
 });
 
-ProductsScheme.pre(/^find/, function (next) {
-  this.find({ isActive: { $ne: false } });
+// ProductsScheme.pre(/^find/, function (next) {
+//   this.find({ isActive: { $ne: false } });
 
-  next();
-});
+//   next();
+// });
 
 ProductsScheme.pre("aggregate", function (next) {
   this.pipeline().unshift({ $match: { isActive: { $ne: false } } });
@@ -79,11 +80,13 @@ ProductsScheme.methods.bidValidation = function (newBid) {
   return isHigher;
 };
 
-ProductsScheme.methods.allowDeletion = function (sellerName) {
+ProductsScheme.methods.allowDeletion = function (sellerName,next) {
   if (sellerName === this.seller) {
-    this.isActive = false;
+    // this.isActive = false;
+  return true;
+  }else{
+    return false
   }
-  return this;
 };
 
 const Products = mongoose.model("Products", ProductsScheme);

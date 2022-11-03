@@ -109,15 +109,20 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
     return next(new AppError("No product found with that ID", 404));
   }
 
-  await product
-    .allowDeletion(req.user.username)
-    .save({ validateModifiedOnly: true });
+  const checkUsername = await product.allowDeletion(req.user.username);
+  // .save({ validateModifiedOnly: true });
+  console.log(checkUsername);
+  checkUsername && AuctionTimers.cancleTimer(product._id);
 
-  AuctionTimers.cancleTimer(product._id);
+  checkUsername && (await Products.findByIdAndDelete(req.params.id));
 
-  res.status(204).json({
-    status: "success",
-  });
+  checkUsername &&
+    res.status(204).json({
+      status: "success",
+    });
+
+  if(!checkUsername) {
+    return next(new AppError("You do not have permission to delete this product", 401))};
 });
 
 exports.getProductsStats = catchAsync(async (req, res, next) => {
@@ -133,7 +138,7 @@ exports.getProductsStats = catchAsync(async (req, res, next) => {
         avgPrice: { $avg: "$price" },
         minPrice: { $min: "$price" },
         maxPrice: { $max: "$price" },
-        products: {$push: "$productsName"}
+        products: { $push: "$productsName" },
       },
     },
     {
