@@ -15,13 +15,13 @@ const sendEmail = async options => {
     })
 
     // 2) Define the email options
-
+    const html= `<a href='http://localhost:3000/resetPassword/${options.resetToken}' target="_blank">RESET PASSWORD</a>`
     const mailOptions = {
         from: "House Of Auctions <support@hoa.com>",
         to: options.email,
         subject: options.subject,
         text: options.message,
-        // html:
+        html
     }
 
     // 3) Actually send the email
