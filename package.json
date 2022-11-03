@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/MatanBenShabat/Ecommerce/issues"
   },
-  "homepage": "https://github.com/MatanBenShabat/Ecommerce#readme"
+  "homepage": "https://github.com/MatanBenShabat/Ecommerce#readme",
+  "dependencies": {
+    "concurrently": "^7.5.0"
+  }
 }
