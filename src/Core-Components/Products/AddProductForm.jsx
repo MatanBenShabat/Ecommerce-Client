@@ -71,7 +71,8 @@ const AddProductForm = ({ isOpen, handleClose }) => {
 
   const addItemMutation = useMutation(
     (data) => {
-      return axios.post(`${process.env.REACT_APP_URL}/api-products/products`, {
+      // return axios.post(`${process.env.REACT_APP_URL}/api-products/products`, {
+      return axios.post(`http://localhost:5000/api-products/products`, {
         image: data.image,
         productsName: data.productsName,
         price: data.price,

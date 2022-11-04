@@ -8,7 +8,7 @@ import DeleteItemSnackbar from "../UI/DeleteItemSnackbar";
 import ProductsPageSkeleton from "../UI/ProductsPageSkeleton";
 import Lottie from "react-lottie";
 import animationNoProducts from "../../assets/lotties/no-product.json";
-import FilteringBar from "./FilteringBar";
+// import FilteringBar from "./FilteringBar";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenSnackBar, snackBarSelector } from "../../store/snackBarSlice";
 
@@ -25,8 +25,8 @@ const gridSX = {
   paddingLeft: "10vw",
 };
 
-const Products = () => {
-  const { products, isLoading } = useGetProducts();
+const Products = ({page}) => {
+  const { products, isLoading } = useGetProducts(true,page);
   const queryClient = useQueryClient();
   const [openDeleteItem, setOpenDeleteItem] = useState(false);
   const snackBarOpened = useSelector(snackBarSelector);
@@ -59,7 +59,7 @@ const Products = () => {
             Your Product Was Added Successfully
           </Alert>
         </Snackbar>
-      {!isLoading && products?.length > 0 && <FilteringBar />}
+      {/* {!isLoading && products?.length > 0 && <FilteringBar />} */}
       {!isLoading && products?.length === 0 && (
         <Grid
           sx={{

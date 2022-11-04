@@ -1,14 +1,16 @@
 import axios from "axios";
 import { useQuery } from "react-query";
 
-const useGetProducts = () => {
+const useGetProducts = (enabled = true,page=1) => {
   const { data, refetch, isLoading } = useQuery(
-    "fetch-products",
+    ["fetch-products",page],
     () => {
-      return axios.get(`${process.env.REACT_APP_URL}/api-products/products`);
+     return axios.get(`http://localhost:5000/api-products/products/?page=${page}&limit=10`);
     },
     {
       staleTime: 1 * 60 * 1000,
+      enabled,
+      cacheTime: 1 * 60 * 1000
     }
   );
   const products = data?.data.data.products || [];

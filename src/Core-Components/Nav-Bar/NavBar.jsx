@@ -21,6 +21,7 @@ import useGetUserData from "../../Hooks/useGetUserData";
 import { Link } from "@mui/material";
 import { useCallback } from "react";
 import { useMemo } from "react";
+import SearchBar from "./SearchBar";
 
 const pages = [
   { name: "Home", link: "/" },
@@ -36,13 +37,12 @@ const Navbar = () => {
 
   const handleLogout = useCallback(async () => {
     try {
-      await axios.post(`${process.env.REACT_APP_URL}/api-users/logout`);
+      await axios.post(`http://localhost:5000/api-users/logout`);
       queryClient.setQueryData("user-data", () => {
         return null;
       });
       navigate("/");
-    } catch (error) {
-    }
+    } catch (error) {}
   }, [queryClient, navigate]);
 
   const settings = useMemo(
@@ -90,8 +90,7 @@ const Navbar = () => {
           >
             House Of Auctions
           </Typography>
-
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" },alignItems:'center',justifyContent:"center",gap:1 }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -120,6 +119,7 @@ const Navbar = () => {
                 display: { xs: "block", md: "none" },
               }}
             >
+              
               {pages.map((page, i) => (
                 <MenuItem key={i} onClick={handleCloseNavMenu}>
                   <Link component={NavLink} to={page.link}>
@@ -127,15 +127,14 @@ const Navbar = () => {
                   </Link>
                 </MenuItem>
               ))}
+              
             </Menu>
-          </Box>
-          {/* <Savings sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} /> */}
-          <Typography
+            <Typography
             variant="h5"
             noWrap
             sx={{
               mr: 2,
-              display: { xs: "flex", md: "none" },
+              display: { xs: "none",sm:'flex' },
               flexGrow: 1,
               fontWeight: 700,
               letterSpacing: ".3rem",
@@ -145,7 +144,11 @@ const Navbar = () => {
           >
             HOA
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+            <SearchBar />
+          </Box>
+          
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" },alignItems:"center"}}>
+            
             {pages.map((page, i) => (
               <Button
                 key={i}
@@ -159,6 +162,7 @@ const Navbar = () => {
                 </Link>
               </Button>
             ))}
+            <SearchBar />
           </Box>
 
           {userData && (

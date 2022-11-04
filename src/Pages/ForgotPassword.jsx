@@ -43,7 +43,8 @@ export default function ForgotPassword() {
   } = useMutation(
     "forgot-password",
     (email) => {
-      return axios.post(`${process.env.REACT_APP_URL}/api-users/forgotPassword`, {
+      // return axios.post(`${process.env.REACT_APP_URL}/api-users/forgotPassword`, {
+      return axios.post(`http://localhost:5000/api-users/forgotPassword`, {
         email,
       });
     },

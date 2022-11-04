@@ -62,7 +62,7 @@ const Product = ({ item, onDelete }) => {
   const deleteMutation = useMutation(
     () => {
       return axios.delete(
-        `${process.env.REACT_APP_URL}/api-products/products/${item._id}`,
+        `http://localhost:5000/api-products/products/${item._id}`,
         { withCredentials: true }
       );
     },
@@ -75,7 +75,6 @@ const Product = ({ item, onDelete }) => {
 
   const handlePlaceBidSuccess = React.useCallback(() => {
     setOpenBid(true);
-    setBid(0);
     socket.emit("add_bid");
 
     queryClient.invalidateQueries("fetch-products");
@@ -84,7 +83,8 @@ const Product = ({ item, onDelete }) => {
   const placeBidMutation = useMutation(
     (newBid) => {
       return axios.patch(
-        `${process.env.REACT_APP_URL}/api-products/products/${item._id}`,
+        // `${process.env.REACT_APP_URL}/api-products/products/${item._id}`,
+        `http://localhost:5000/api-products/products/${item._id}`,
         {
           currentBid: newBid,
           currentBidder: userData.username,
@@ -252,7 +252,8 @@ const Product = ({ item, onDelete }) => {
               </Snackbar>
               {placeBidMutation.isSuccess && openBid && (
                 <Alert severity="info" onClose={handleCloseBid}>
-                  New bid is : {item.currentBid}$
+                  New bid is : {bid}$
+                  
                 </Alert>
               )}
             </form>
