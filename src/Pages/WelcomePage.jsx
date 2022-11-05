@@ -14,12 +14,10 @@ import {
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import React from "react";
-import useGetUserData from "../Hooks/useGetUserData";
 
 const drawerWidth = 240;
 
 const WelcomePage = () => {
-  const userData = useGetUserData();
 
   return (
     <Box sx={{ display: "flex" }}>

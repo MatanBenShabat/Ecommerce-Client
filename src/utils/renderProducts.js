@@ -5,6 +5,7 @@ import Product from "../Core-Components/Products/Product";
 
 const renderProducts = (products, handleDelete) => {
   return products.map((item) => {
+    if(item.isActive === false) return null;
     return (
       <Grid
         item

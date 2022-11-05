@@ -71,7 +71,8 @@ function App() {
         {!data && <Route path="/forgotpassword" element={<ForgotPassword />} />}
         {!data && <Route path="/resetpassword/:token" element={<ResetPassword />} />}
         {data && <Route path="/" element={<WelcomePage />} />}
-        <Route path="/products" element={<Products />} />
+        <Route path="/products/" element={<Navigate to="/products/1" replace />} />
+        <Route path="/products/:page" element={<Products />} />
       </Routes>
       <Snackbar
         open={open}
