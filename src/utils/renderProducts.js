@@ -1,11 +1,13 @@
 import { Grid } from "@mui/material";
 import React from "react";
 import Product from "../Core-Components/Products/Product";
+import useGetUserData from "../Hooks/useGetUserData";
 
 
-const renderProducts = (products, handleDelete) => {
+const RenderProducts = (products, handleDelete) => {
+  const userData = useGetUserData();
   return products.map((item) => {
-    if(item.isActive === false) return null;
+    if(item.isActive === false && userData.userName !== item.userName) return null;
     return (
       <Grid
         item
@@ -24,4 +26,4 @@ const renderProducts = (products, handleDelete) => {
   });
 };
 
-export default renderProducts;
+export default RenderProducts;

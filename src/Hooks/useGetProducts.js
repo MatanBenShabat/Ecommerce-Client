@@ -9,7 +9,7 @@ const useGetProducts = (enabled = true, page = 1) => {
     ["fetch-products", page,brand],
     () => {
       if (brand !== "" && brand !== "All") {
-        return axios.get(
+          return axios.get(
           `http://localhost:5000/api-products/products/?page=${page}&limit=10&brand=${brand}`
         );
       } else {
