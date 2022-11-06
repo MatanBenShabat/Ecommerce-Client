@@ -16,7 +16,8 @@ import ResetPassword from "./Pages/ResetPassword";
 const SignUp = React.lazy(() => import("./Pages/SignUpPage"));
 
 const tryLogin = () => {
-  return axios.post("http://localhost:5000/api-users/startApp");
+  return axios.post("https://house-of--auctions.herokuapp.com/api-users/startApp");
+  // return axios.post("http://localhost:5000/api-users/startApp");
   // return axios.post(`${process.env.REACT_APP_URL}/api-users/startApp`);
 };
 

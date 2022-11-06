@@ -44,7 +44,8 @@ export default function ForgotPassword() {
     "forgot-password",
     (email) => {
       // return axios.post(`${process.env.REACT_APP_URL}/api-users/forgotPassword`, {
-      return axios.post(`http://localhost:5000/api-users/forgotPassword`, {
+      return axios.post(`https://house-of--auctions.herokuapp.com/api-users/forgotPassword`, {
+      // return axios.post(`http://localhost:5000/api-users/forgotPassword`, {
         email,
       });
     },

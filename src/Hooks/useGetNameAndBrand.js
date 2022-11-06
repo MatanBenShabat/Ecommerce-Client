@@ -5,7 +5,8 @@ const useGetNameAndBrand = () => {
   const { data, refetch, isLoading } = useQuery(
     "fetch-name-and-brand",
     () => {
-      return axios.get(`http://localhost:5000/api-products/name-and-brand`);
+      return axios.get(`https://house-of--auctions.herokuapp.com/api-products/name-and-brand`);
+      // return axios.get(`http://localhost:5000/api-products/name-and-brand`);
     },
     {
       staleTime: 1 * 60 * 1000,
