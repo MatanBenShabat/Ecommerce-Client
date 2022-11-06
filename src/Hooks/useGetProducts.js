@@ -10,7 +10,7 @@ const useGetProducts = (enabled = true, page = 1) => {
     () => {
       if (brand !== "" && brand !== "All") {
           return axios.get(
-          `https://house-of--auctions.herokuapp.com/?page=${page}&limit=10&brand=${brand}`
+          `https://house-of--auctions.herokuapp.com/api-products/products/?page=${page}&limit=10&brand=${brand}`
           // `http://localhost:5000/api-products/products/?page=${page}&limit=10&brand=${brand}`
         );
       } else {
