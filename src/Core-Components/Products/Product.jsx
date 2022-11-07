@@ -62,7 +62,7 @@ const Product = ({ item, onDelete }) => {
   const deleteMutation = useMutation(
     () => {
       return axios.delete(
-        `https://house-of--auctions.herokuapp.com/products/${item._id}`,
+        `https://house-of--auctions.herokuapp.com/api-products/products/${item._id}`,
         // `http://localhost:5000/api-products/products/${item._id}`,
         { withCredentials: true }
       );
