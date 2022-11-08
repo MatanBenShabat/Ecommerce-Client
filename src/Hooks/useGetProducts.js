@@ -2,17 +2,24 @@ import axios from "axios";
 import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { brandSelector } from "../store/brandSlice";
+import { sortSelector } from "../store/sortSlice";
 
 const useGetProducts = (enabled = true, page = 1) => {
   const brand = useSelector(brandSelector);
+  const sort = useSelector(sortSelector);
   const { data, refetch, isLoading } = useQuery(
-    ["fetch-products", page,brand],
+    ["fetch-products", page,brand,sort],
     () => {
       if (brand !== "" && brand !== "All") {
           return axios.get(
           `${process.env.REACT_APP_URL}/api-products/products/?page=${page}&limit=10&brand=${brand}`
         );
-      } else {
+      } else if (brand !== "" && brand !== "All" && sort !=="") {
+        return axios.get(
+        `${process.env.REACT_APP_URL}/api-products/products/?page=${page}&limit=10&brand=${brand}&sort=${sort}`
+      );
+    }
+      else {
         return axios.get(
           `${process.env.REACT_APP_URL}/api-products/products/?page=${page}&limit=10`
         );

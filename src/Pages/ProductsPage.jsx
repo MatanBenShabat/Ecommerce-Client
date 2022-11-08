@@ -11,7 +11,8 @@ const calcPageCount = (num)=>{
 }
 
 const ProductsPage = () => {
-  const {page} = useParams();
+  let {page} = useParams();
+  page = page || 1
   const changePage = useNavigate()
   // const [page, setPage] = useState(pageParam);
   const userData = useGetUserData();
@@ -33,7 +34,7 @@ const ProductsPage = () => {
     >
       <FilteringBar />
       <Products page={page} isLoading={isLoading} products={products} />
-      <Pagination onChange={handleChange} count={calcPageCount(numOfProducts)} defaultPage={page * 1} />
+      <Pagination onChange={handleChange} count={calcPageCount(numOfProducts)} page={page * 1 } />
       {isSeller && <AddProduct />}
     </Box>
   );

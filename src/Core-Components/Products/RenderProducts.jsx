@@ -1,10 +1,10 @@
 import { Grid } from "@mui/material";
 import React from "react";
-import Product from "../Core-Components/Products/Product";
-import useGetUserData from "../Hooks/useGetUserData";
+import Product from "./Product";
+import useGetUserData from "../../Hooks/useGetUserData";
 
 
-const RenderProducts = (products, handleDelete) => {
+const RenderProducts = ({products, handleDelete}) => {
   const userData = useGetUserData();
   return products.map((item) => {
     if(item.isActive === false && userData.userName !== item.userName) return null;
@@ -23,7 +23,7 @@ const RenderProducts = (products, handleDelete) => {
         <Product item={item} onDelete={handleDelete} />
       </Grid>
     );
-  });
+  })
 };
 
 export default RenderProducts;

@@ -2,14 +2,13 @@ import { Alert, Grid, Snackbar } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useQueryClient } from "react-query";
 import socket from "../../socket/socket";
-import renderProducts from "../../utils/renderProducts";
+import RenderProducts from "./RenderProducts";
 import DeleteItemSnackbar from "../UI/DeleteItemSnackbar";
 import ProductsPageSkeleton from "../UI/ProductsPageSkeleton";
 import Lottie from "react-lottie";
 import animationNoProducts from "../../assets/lotties/no-product.json";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenSnackBar, snackBarSelector } from "../../store/snackBarSlice";
-import { brandSelector } from "../../store/brandSlice";
 
 const lottieOptions = {
   loop: true,
@@ -24,29 +23,23 @@ const gridSX = {
   paddingLeft: "10vw",
 };
 
-const Products = ({ products,page,isLoading }) => {
+const Products = ({ products, page, isLoading }) => {
   const queryClient = useQueryClient();
-
-  const brandGlobal = useSelector(brandSelector);
+  const dispatch = useDispatch();
+  const snackBarOpened = useSelector(snackBarSelector);
 
   const [openDeleteItem, setOpenDeleteItem] = useState(false);
-  const snackBarOpened = useSelector(snackBarSelector);
-  const dispatch = useDispatch();
 
   useEffect(() => {
     socket.on("product_added", () => {
       queryClient.invalidateQueries(["fetch-products", page]);
     });
-    queryClient.invalidateQueries(["fetch-products", page]);
-  }, [brandGlobal,queryClient, page]);
+  }, [queryClient, page]);
 
-  const handleCloseDeleteItem = () => {
-    setOpenDeleteItem(false);
-  };
+  const handleCloseDeleteItem = () => setOpenDeleteItem(false);
 
-  const handleDeleteItem = () => {
-    setOpenDeleteItem(true);
-  };
+  const handleDeleteItem = () => setOpenDeleteItem(true);
+
   const handleCloseSnackBar = () => dispatch(setOpenSnackBar(false));
 
   return (
@@ -84,9 +77,12 @@ const Products = ({ products,page,isLoading }) => {
         columnSpacing={{ lg: 7, md: 5, sm: 4 }}
         sx={gridSX}
       >
-        {!isLoading &&
-          products?.length > 0 &&
-          renderProducts(products, handleDeleteItem)}
+        {!isLoading && products?.length > 0 && (
+          <RenderProducts
+            products={products}
+            handleDeleteItem={handleDeleteItem}
+          />
+        )}
         {isLoading && <ProductsPageSkeleton />}
         <DeleteItemSnackbar
           open={openDeleteItem}

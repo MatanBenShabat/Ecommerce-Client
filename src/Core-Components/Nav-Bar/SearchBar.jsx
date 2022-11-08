@@ -1,7 +1,6 @@
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
-import useGetProducts from "../../Hooks/useGetProducts";
 import { useState, Fragment } from "react";
 import useGetNameAndBrand from "../../Hooks/useGetNameAndBrand";
 
