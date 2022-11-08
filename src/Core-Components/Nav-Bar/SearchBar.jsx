@@ -3,21 +3,20 @@ import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
 import useGetProducts from "../../Hooks/useGetProducts";
 import { useState, Fragment } from "react";
+import useGetNameAndBrand from "../../Hooks/useGetNameAndBrand";
 
 export default function SearchBar() {
   const {
-    products,
-    // getProducts,
+    productsNames,
     isLoading,
-  } = useGetProducts(false);
+  } = useGetNameAndBrand();
   const [open, setOpen] = useState(false);
 
-  const options = products.map((item) => ({
-    title: item?.productsName.toLowerCase(),
+  const options = productsNames.map((item) => ({
+    title: item?.toLowerCase(),
   }));
 
   const handleOpen = () => {
-    // getProducts();
     setOpen(true);
   };
 

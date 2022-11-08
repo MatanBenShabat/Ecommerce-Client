@@ -15,10 +15,11 @@ const useGetNameAndBrand = () => {
   );
   const itemsObj = data?.data.data || [];
   const brandsArray = Object.values(itemsObj).map((e) => e.brand);
+  const productsNames = Object.values(itemsObj).map((e) => e.productsName);
   const brandsSet = new Set([...brandsArray]);
   const brands = Array.from(brandsSet);
 
-  return { brands, getNameAndBrand: refetch, isLoading };
+  return { brands,productsNames, getNameAndBrand: refetch, isLoading };
 };
 
 export default useGetNameAndBrand;
