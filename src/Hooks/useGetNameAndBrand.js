@@ -5,8 +5,7 @@ const useGetNameAndBrand = () => {
   const { data, refetch, isLoading } = useQuery(
     "fetch-name-and-brand",
     () => {
-      return axios.get(`https://house-of--auctions.herokuapp.com/api-products/name-and-brand`);
-      // return axios.get(`http://localhost:5000/api-products/name-and-brand`);
+      return axios.get(`${process.env.REACT_APP_URL}/api-products/name-and-brand`);
     },
     {
       staleTime: 1 * 60 * 1000,
@@ -18,7 +17,6 @@ const useGetNameAndBrand = () => {
   const brandsArray = Object.values(itemsObj).map((e) => e.brand);
   const brandsSet = new Set([...brandsArray]);
   const brands = Array.from(brandsSet);
-
 
   return { brands, getNameAndBrand: refetch, isLoading };
 };

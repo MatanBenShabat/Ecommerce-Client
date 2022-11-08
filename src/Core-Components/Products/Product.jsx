@@ -62,8 +62,7 @@ const Product = ({ item, onDelete }) => {
   const deleteMutation = useMutation(
     () => {
       return axios.delete(
-        `https://house-of--auctions.herokuapp.com/api-products/products/${item._id}`,
-        // `http://localhost:5000/api-products/products/${item._id}`,
+        `${process.env.REACT_APP_URL}/api-products/products/${item._id}`,
         { withCredentials: true }
       );
     },
@@ -84,9 +83,7 @@ const Product = ({ item, onDelete }) => {
   const placeBidMutation = useMutation(
     (newBid) => {
       return axios.patch(
-        // `${process.env.REACT_APP_URL}/api-products/products/${item._id}`,
-        `https://house-of--auctions.herokuapp.com/api-products/products/${item._id}`,
-        // `http://localhost:5000/api-products/products/${item._id}`,
+        `${process.env.REACT_APP_URL}/api-products/products/${item._id}`,
         {
           currentBid: newBid,
           currentBidder: userData.username,

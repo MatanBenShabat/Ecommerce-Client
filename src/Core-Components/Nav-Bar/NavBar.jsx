@@ -37,8 +37,7 @@ const Navbar = () => {
 
   const handleLogout = useCallback(async () => {
     try {
-      await axios.post(`https://house-of--auctions.herokuapp.com/api-users/logout`);
-      // await axios.post(`http://localhost:5000/api-users/logout`);
+      await axios.post(`${process.env.REACT_APP_URL}/api-users/logout`);
       queryClient.setQueryData("user-data", () => {
         return null;
       });

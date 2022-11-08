@@ -10,13 +10,11 @@ const useGetProducts = (enabled = true, page = 1) => {
     () => {
       if (brand !== "" && brand !== "All") {
           return axios.get(
-          `https://house-of--auctions.herokuapp.com/api-products/products/?page=${page}&limit=10&brand=${brand}`
-          // `http://localhost:5000/api-products/products/?page=${page}&limit=10&brand=${brand}`
+          `${process.env.REACT_APP_URL}/api-products/products/?page=${page}&limit=10&brand=${brand}`
         );
       } else {
         return axios.get(
-          `https://house-of--auctions.herokuapp.com/api-products/products/?page=${page}&limit=10`
-          // `http://localhost:5000/api-products/products/?page=${page}&limit=10`
+          `${process.env.REACT_APP_URL}/api-products/products/?page=${page}&limit=10`
         );
       }
     },

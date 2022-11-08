@@ -53,7 +53,7 @@ export default function SignUp() {
 
   const handleSubmitSignUp = (data) => {
     axios
-      .post(`https://house-of--auctions.herokuapp.com/api-users/signup`, {
+      .post(`${process.env.REACT_APP_URL}/api-users/signup`, {
       // .post(`http://localhost:5000/api-users/signup`, {
         email: data.email,
         username: data.username,
