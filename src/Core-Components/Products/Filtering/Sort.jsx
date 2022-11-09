@@ -3,14 +3,13 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-import { useDispatch,useSelector } from "react-redux";
-import { setSort as setGlobalSort, sortSelector  } from "../../../store/sortSlice";
+import { useDispatch } from "react-redux";
+import { setSort as setGlobalSort  } from "../../../store/sortSlice";
 import { useState } from "react";
 
 export default function Sort() {
   const [sort, setSort] = useState("");
   const dispatch = useDispatch();
-  const sortValue = useSelector(sortSelector);
   const handleChange = (event) => {
     setSort(event.target.value);
     dispatch(setGlobalSort(event.target.value));

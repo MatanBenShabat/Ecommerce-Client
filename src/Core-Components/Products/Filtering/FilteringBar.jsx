@@ -1,5 +1,4 @@
 import { Box, Stack } from "@mui/material";
-import React, { Fragment } from "react";
 import BrandFilter from "./BrandFilter";
 import PriceFilter from "./PriceFilter";
 import Sort from "./Sort";
