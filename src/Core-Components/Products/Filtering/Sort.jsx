@@ -34,12 +34,12 @@ export default function Sort() {
           <MenuItem value={"-price"} key={2}>
             Price High To Low
           </MenuItem>
-          <MenuItem value={"rating"} key={3}>
+          <MenuItem value={"-rating"} key={3}>
             Rating
           </MenuItem>
-          {/* <MenuItem value={sort} key={4}>
+          <MenuItem value={"createDate"} key={4}>
             What's New
-          </MenuItem> */}
+          </MenuItem>
         </Select>
       </FormControl>
     </Box>

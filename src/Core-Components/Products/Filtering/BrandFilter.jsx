@@ -30,7 +30,7 @@ export default function BrandFilter() {
           onChange={handleChange}
         >
           <MenuItem value={""} key={"all"}>
-            All
+            Clear Choices
           </MenuItem>
           {brands.map((brand) => {
             return (
