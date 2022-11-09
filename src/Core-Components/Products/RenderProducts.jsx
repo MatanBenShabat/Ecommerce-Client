@@ -4,7 +4,7 @@ import Product from "./Product";
 import useGetUserData from "../../Hooks/useGetUserData";
 
 
-const RenderProducts = ({products, handleDelete}) => {
+const RenderProducts = ({products, handleDeleteItem}) => {
   const userData = useGetUserData();
   return products.map((item) => {
     if(item.isActive === false && userData.userName !== item.userName) return null;
@@ -20,7 +20,7 @@ const RenderProducts = ({products, handleDelete}) => {
         justifyContent="center"
         alignItems="center"
       >
-        <Product item={item} onDelete={handleDelete} />
+        <Product item={item} onDelete={handleDeleteItem} />
       </Grid>
     );
   })

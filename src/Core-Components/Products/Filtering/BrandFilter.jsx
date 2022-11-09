@@ -9,7 +9,7 @@ import { setBrand as setGlobalBrand } from "../../../store/brandSlice";
 import { useState } from "react";
 
 export default function BrandFilter() {
-  const [brand, setBrand] = useState("All");
+  const [brand, setBrand] = useState("");
   const dispatch = useDispatch();
   const { brands } = useGetNameAndBrand();
 
@@ -29,7 +29,7 @@ export default function BrandFilter() {
           label="Brand"
           onChange={handleChange}
         >
-          <MenuItem value={"All"} key={"all"}>
+          <MenuItem value={""} key={"all"}>
             All
           </MenuItem>
           {brands.map((brand) => {

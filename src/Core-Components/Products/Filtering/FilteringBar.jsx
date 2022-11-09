@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import React, { Fragment } from "react";
 import BrandFilter from "./BrandFilter";
 import PriceFilter from "./PriceFilter";
@@ -6,14 +6,13 @@ import Sort from "./Sort";
 
 function FilteringBar() {
   return (
-    <Fragment>
-      <h2>Filtering:</h2>
+    <Box sx={{border:"solid 1px gray",padding:"2% 5% 2% 5%",marginTop:"20px",boxShadow:"0px 3px 3px 2px gray"}}>
       <Stack direction="row" spacing={2}>
         <PriceFilter />
         <BrandFilter />
         <Sort/>
       </Stack>
-    </Fragment>
+    </Box>
   );
 }
 

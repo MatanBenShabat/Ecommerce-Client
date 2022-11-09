@@ -18,6 +18,7 @@ import {
   Chip,
   FilledInput,
   InputAdornment,
+  Rating,
   Snackbar,
   Tooltip,
   Typography,
@@ -41,6 +42,7 @@ const Product = ({ item, onDelete }) => {
 
   const [bid, setBid] = useState(0);
   const [openBid, setOpenBid] = useState(false);
+  const [rateValue, setRateValue] = useState(item.rating);
 
   const userIsSeller = userData?.username === item.seller;
   const userIsCurrentBidder = userData?.username === item.currentBidder;
@@ -59,6 +61,12 @@ const Product = ({ item, onDelete }) => {
     queryClient.invalidateQueries("fetch-products");
   }, [queryClient, onDelete]);
 
+  const handleRateSuccess = React.useCallback(() => {
+    socket.emit("rate_product");
+    queryClient.invalidateQueries("fetch-products");
+  }, [queryClient]);
+
+  
   const deleteMutation = useMutation(
     () => {
       return axios.delete(
@@ -83,7 +91,7 @@ const Product = ({ item, onDelete }) => {
   const placeBidMutation = useMutation(
     (newBid) => {
       return axios.patch(
-        `${process.env.REACT_APP_URL}/api-products/products/${item._id}`,
+        `${process.env.REACT_APP_URL}/api-products/products-bid/${item._id}`,
         {
           currentBid: newBid,
           currentBidder: userData.username,
@@ -92,6 +100,15 @@ const Product = ({ item, onDelete }) => {
       );
     },
     { onSuccess: handlePlaceBidSuccess }
+  );
+
+  const rateMutation = useMutation(
+    (value) => {
+      return axios.patch(`${process.env.REACT_APP_URL}/api-products/products-rate/${item.id}`, {
+        rating: value
+      });
+    },
+    { onSuccess: handleRateSuccess }
   );
 
   const handlePlaceBidSubmit = (e) => {
@@ -159,6 +176,14 @@ const Product = ({ item, onDelete }) => {
         alt={item.productsName}
         height="140"
         image={item.image}
+      />
+      <Rating
+        name="simple-controlled"
+        value={rateValue}
+        onChange={(event, newValue) => {
+          setRateValue(newValue)
+          rateMutation.mutate(newValue);
+        }}
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
@@ -252,7 +277,6 @@ const Product = ({ item, onDelete }) => {
               {placeBidMutation.isSuccess && openBid && (
                 <Alert severity="info" onClose={handleCloseBid}>
                   New bid is : {bid}$
-                  
                 </Alert>
               )}
             </form>
