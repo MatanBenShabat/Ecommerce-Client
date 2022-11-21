@@ -47,10 +47,10 @@ const Navbar = () => {
 
   const settings = useMemo(
     () => [
-      { name: "Profile", function: () => {} },
+      { name: "Profile", function: () => {navigate("/profile")} },
       { name: "Logout", function: handleLogout },
     ],
-    [handleLogout]
+    [handleLogout,navigate]
   );
 
   const handleOpenNavMenu = (event) => {

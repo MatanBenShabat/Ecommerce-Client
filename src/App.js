@@ -11,6 +11,8 @@ import upperFirstLetter from "./utils/upperFirstLetter";
 import ForgotPassword from "./Pages/ForgotPassword";
 import Loading from "./Loading";
 import ResetPassword from "./Pages/ResetPassword";
+import Profile from "./Pages/Profile";
+import ProductPage from "./Pages/ProductPage";
 
 
 const SignUp = React.lazy(() => import("./Pages/SignUpPage"));
@@ -70,8 +72,10 @@ function App() {
         {!data && <Route path="/forgotpassword" element={<ForgotPassword />} />}
         {!data && <Route path="/resetpassword/:token" element={<ResetPassword />} />}
         {data && <Route path="/" element={<WelcomePage />} />}
+        {data && <Route path="/profile" element={<Profile data={data.data.data} />} />}
         <Route path="/products/" element={<Navigate to="/products/1" replace />} />
-        <Route path="/products/:page" element={<Products />} />
+        <Route exact path="/products/:page" element={<Products />} />
+        {data && <Route exact path="/products/product/:name" element={<ProductPage />} />}
       </Routes>
       <Snackbar
         open={open}

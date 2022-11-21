@@ -3,13 +3,14 @@ import Autocomplete from "@mui/material/Autocomplete";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useState, Fragment } from "react";
 import useGetNameAndBrand from "../../Hooks/useGetNameAndBrand";
+import { useNavigate } from "react-router";
 
 export default function SearchBar() {
-  const {
-    productsNames,
-    isLoading,
-  } = useGetNameAndBrand();
+  const navigate = useNavigate();
+
+  const { productsNames, isLoading } = useGetNameAndBrand();
   const [open, setOpen] = useState(false);
+  // const [value,setValue] = useState('')
 
   const options = productsNames.map((item) => ({
     title: item?.toLowerCase(),
@@ -37,6 +38,22 @@ export default function SearchBar() {
       onClose={handleClose}
       isOptionEqualToValue={(option, value) => option.title === value.title}
       getOptionLabel={(option) => option.title}
+      onChange={(_e,value,reason) => {
+        // if (reason === 'clear') {
+        //   setValue('')
+        //   return
+        // } else {
+          navigate(`/products/product/${value.title}`, { replace: true });
+        //   setValue(value)
+        // }
+      }}
+      // value={value}
+      blurOnSelect={true}
+      
+      // onInputChange={(event, newInputValue, reason) => {
+
+      // }}
+      openOnFocus={true}
       options={options}
       loading={isLoading}
       renderInput={(params) => (

@@ -28,6 +28,8 @@ import GavelIcon from "@mui/icons-material/Gavel";
 
 import minBid from "../../utils/minBid";
 import SellerActions from "./SellerActions";
+import { Box } from "@mui/system";
+import { useNavigate } from "react-router";
 
 const cardSx = {
   position: "relative",
@@ -39,10 +41,16 @@ const cardSx = {
 const Product = ({ item, onDelete }) => {
   const userData = useGetUserData();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const [bid, setBid] = useState(0);
   const [openBid, setOpenBid] = useState(false);
   const [rateValue, setRateValue] = useState(item.rating);
+
+  const handleClick = (name) => {
+    navigate(`/products/product/${name}`, { replace: true });
+    console.log(name);
+  };
 
   const userIsSeller = userData?.username === item.seller;
   const userIsCurrentBidder = userData?.username === item.currentBidder;
@@ -66,7 +74,6 @@ const Product = ({ item, onDelete }) => {
     queryClient.invalidateQueries("fetch-products");
   }, [queryClient]);
 
-  
   const deleteMutation = useMutation(
     () => {
       return axios.delete(
@@ -104,9 +111,12 @@ const Product = ({ item, onDelete }) => {
 
   const rateMutation = useMutation(
     (value) => {
-      return axios.patch(`${process.env.REACT_APP_URL}/api-products/products-rate/${item.id}`, {
-        rating: value
-      });
+      return axios.patch(
+        `${process.env.REACT_APP_URL}/api-products/products-rate/${item.id}`,
+        {
+          rating: value,
+        }
+      );
     },
     { onSuccess: handleRateSuccess }
   );
@@ -168,6 +178,14 @@ const Product = ({ item, onDelete }) => {
         />
       )}
       <CardHeader
+        sx={{
+          cursor: "pointer",
+          transitionDuration:"0.3s",
+          "&:hover": {
+            background: "gray",
+          },
+        }}
+        onClick={() => handleClick(item.productsName)}
         title={item.productsName}
         subheader={`Current Bid: $${item.currentBid}`}
       />
@@ -177,14 +195,16 @@ const Product = ({ item, onDelete }) => {
         height="140"
         image={item.image}
       />
-      <Rating
-        name="simple-controlled"
-        value={rateValue}
-        onChange={(event, newValue) => {
-          setRateValue(newValue)
-          rateMutation.mutate(newValue);
-        }}
-      />
+      <Box sx={{ display: "flex", justifyContent: "center", paddingTop: 1 }}>
+        <Rating
+          name="simple-controlled"
+          value={rateValue}
+          onChange={(event, newValue) => {
+            setRateValue(newValue);
+            rateMutation.mutate(newValue);
+          }}
+        />
+      </Box>
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
           {item.productsName}

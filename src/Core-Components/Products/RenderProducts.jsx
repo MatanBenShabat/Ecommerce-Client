@@ -19,6 +19,8 @@ const RenderProducts = ({products, handleDeleteItem}) => {
         display={"flex"}
         justifyContent="center"
         alignItems="center"
+        
+        
       >
         <Product item={item} onDelete={handleDeleteItem} />
       </Grid>

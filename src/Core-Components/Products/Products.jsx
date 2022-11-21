@@ -28,6 +28,7 @@ const Products = ({ products, page, isLoading }) => {
   const dispatch = useDispatch();
   const snackBarOpened = useSelector(snackBarSelector);
 
+
   const [openDeleteItem, setOpenDeleteItem] = useState(false);
 
   useEffect(() => {
@@ -41,6 +42,7 @@ const Products = ({ products, page, isLoading }) => {
   const handleDeleteItem = () => setOpenDeleteItem(true);
 
   const handleCloseSnackBar = () => dispatch(setOpenSnackBar(false));
+
 
   return (
     <>
