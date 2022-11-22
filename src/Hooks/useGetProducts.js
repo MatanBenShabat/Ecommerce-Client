@@ -2,30 +2,33 @@ import axios from "axios";
 import { useQuery } from "react-query";
 import { useSelector } from "react-redux";
 import { brandSelector } from "../store/brandSlice";
+import { greaterThanSelector, lessThanSelector } from "../store/priceFilterSlice";
 import { sortSelector } from "../store/sortSlice";
 
 const useGetProducts = (enabled = true, page = 1) => {
   const brand = useSelector(brandSelector);
   const sort = useSelector(sortSelector);
+  const lessThan = useSelector(lessThanSelector)
+  const greaterThan = useSelector(greaterThanSelector)
   const { data, refetch, isLoading } = useQuery(
-    ["fetch-products", page,brand,sort],
+    ["fetch-products", page,brand,sort,lessThan,greaterThan],
     () => {
       if (brand !== "" && sort === "") {
           return axios.get(
-          `${process.env.REACT_APP_URL}/api-products/products/?page=${page}&limit=10&brand=${brand}`
+          `${process.env.REACT_APP_URL}/api-products/products/?price[gte]=${greaterThan}&price[lte]=${lessThan}&page=${page}&limit=10&brand=${brand}`
         );
       } else if (brand !== "" && sort !=="") {
         return axios.get(
-        `${process.env.REACT_APP_URL}/api-products/products/?page=${page}&limit=10&brand=${brand}&sort=${sort}`
+        `${process.env.REACT_APP_URL}/api-products/products/?price[gte]=${greaterThan}&price[lte]=${lessThan}&page=${page}&limit=10&brand=${brand}&sort=${sort}`
       );
     }else if (brand === "" && sort !=="") {
       return axios.get(
-      `${process.env.REACT_APP_URL}/api-products/products/?page=${page}&limit=10&sort=${sort}`
+      `${process.env.REACT_APP_URL}/api-products/products/?price[gte]=${greaterThan}&price[lte]=${lessThan}&page=${page}&limit=10&sort=${sort}`
     );
   }
       else {
         return axios.get(
-          `${process.env.REACT_APP_URL}/api-products/products/?page=${page}&limit=10`
+          `${process.env.REACT_APP_URL}/api-products/products/?price[gte]=${greaterThan}&price[lte]=${lessThan}&page=${page}&limit=10`
         );
       }
     },

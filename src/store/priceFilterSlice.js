@@ -3,15 +3,20 @@ import { createSlice } from "@reduxjs/toolkit";
 export const priceFilterSlice = createSlice({
   name: "priceFilter",
   initialState: {
-    priceFilter: [0,1500],
+    lessThan: 1500,
+    greaterThan: 0,
   },
   reducers: {
-    setPriceFilter: (state, payload) => {
-      state.priceFilter = payload.payload;
+    setLessThan: (state, payload) => {
+      state.lessThan = payload.payload;
+    },
+    setGreaterThan: (state, payload) => {
+      state.greaterThan = payload.payload;
     },
   },
 });
 
-export const { setPriceFilter } = priceFilterSlice.actions;
-export const priceFilterSelector = (state) => state.priceFilter.priceFilter;
+export const { setLessThan,setGreaterThan } = priceFilterSlice.actions;
+export const lessThanSelector = (state) => state.priceFilter.lessThan;
+export const greaterThanSelector = (state) => state.priceFilter.greaterThan;
 export default priceFilterSlice.reducer;

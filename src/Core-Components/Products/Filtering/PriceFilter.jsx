@@ -2,31 +2,20 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { FormControl, InputLabel, Select, Typography } from "@mui/material";
-
-// function valuetext(value) {
-//   // return `${value}°C`;
-//   console.log(value);
-// }
+import { useDispatch } from "react-redux";
+import { setGreaterThan, setLessThan } from "../../../store/priceFilterSlice";
 
 export default function PriceFilter() {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const [value, setValue] = React.useState([0, 1500]);
-  
-  const handleChange = (event, value) => {
-    // console.log(value)
-    // dispatch(setGlobalPriceFilter(newValue));
-    setValue(value);
-    // console.log(newValue);
-    // const debouncedFunc = () => updateWeightValue(boostedLabel, newValue);
-    // debounce(handleChange, 1000, {leading:false, trailing:true});
-    // console.log([newValue?.target?.firstChild?.value,newValue?.target?.lastChild?.value]);
-  };
 
-  // const searchDelayed = 
-  // React.useMemo(
-  //   () => debounce(handleChange, 1),
-  //   [handleChange]
-  // );
+  const handleChange = (event, value) => {
+    setValue(value);
+  };
+  const handleGlobalChange = () => {
+    dispatch(setLessThan(value[1]));
+    dispatch(setGreaterThan(value[0]));
+  };
 
   return (
     <FormControl fullWidth>
@@ -54,17 +43,15 @@ export default function PriceFilter() {
           </Typography>
           <Slider
             getAriaLabel={() => "Temperature range"}
-            // defaultValue={[0, 1500]}
             value={value}
             onChange={handleChange}
+            onChangeCommitted={handleGlobalChange}
             valueLabelDisplay="auto"
-            // getAriaValueText={valuetext}
             min={0}
             max={1500}
           />
         </Box>
       </Select>
-      {/* {console.log(value?.target?.firstChild?.value)} */}
     </FormControl>
   );
 }

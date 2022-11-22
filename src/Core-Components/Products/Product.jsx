@@ -49,7 +49,6 @@ const Product = ({ item, onDelete }) => {
 
   const handleClick = (name) => {
     navigate(`/products/product/${name}`, { replace: true });
-    console.log(name);
   };
 
   const userIsSeller = userData?.username === item.seller;
