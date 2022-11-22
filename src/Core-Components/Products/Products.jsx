@@ -1,4 +1,4 @@
-import { Alert, Grid, Snackbar } from "@mui/material";
+import { Alert, Grid, Snackbar, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useQueryClient } from "react-query";
 import socket from "../../socket/socket";
@@ -9,6 +9,8 @@ import Lottie from "react-lottie";
 import animationNoProducts from "../../assets/lotties/no-product.json";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpenSnackBar, snackBarSelector } from "../../store/snackBarSlice";
+import useGetUserData from "../../Hooks/useGetUserData";
+import Unauthorized from "../UI/Unauthorized";
 
 const lottieOptions = {
   loop: true,
@@ -24,6 +26,8 @@ const gridSX = {
 };
 
 const Products = ({ products, page, isLoading }) => {
+  const userData = useGetUserData();
+
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
   const snackBarOpened = useSelector(snackBarSelector);
@@ -57,7 +61,7 @@ const Products = ({ products, page, isLoading }) => {
         </Alert>
       </Snackbar>
       {/* {!isLoading && products?.length > 0 && <FilteringBar />} */}
-      {!isLoading && products?.length === 0 && (
+      {userData && !isLoading && products?.length === 0 && (
         <Grid
           sx={{
             display: "flex",
@@ -79,13 +83,14 @@ const Products = ({ products, page, isLoading }) => {
         columnSpacing={{ lg: 7, md: 5, sm: 4 }}
         sx={gridSX}
       >
-        {!isLoading && products?.length > 0 && (
+        {!userData && <Unauthorized/>}
+        {userData && !isLoading && products?.length > 0 && (
           <RenderProducts
             products={products}
             handleDeleteItem={handleDeleteItem}
           />
         )}
-        {isLoading && <ProductsPageSkeleton />}
+        {userData && isLoading && <ProductsPageSkeleton />}
         <DeleteItemSnackbar
           open={openDeleteItem}
           handleClose={handleCloseDeleteItem}

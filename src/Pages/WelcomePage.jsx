@@ -1,98 +1,106 @@
-import {
-  Divider,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Toolbar,
-  Typography,
-  Box,
-  Drawer,
-} from "@mui/material";
+import { Typography, Box, Button, Card, Grid, CardMedia, Paper } from "@mui/material";
+import useGetProducts from "../Hooks/useGetProducts";
 
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import React from "react";
+import { Stack } from "@mui/system";
+import useGetUserData from "../Hooks/useGetUserData";
 
 const drawerWidth = 240;
 
 const WelcomePage = () => {
-
+  const { products } = useGetProducts();
+  const userData = useGetUserData();
   return (
-    <Box sx={{ display: "flex" }}>
-      <Drawer
-        variant="permanent"
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: "100vw",
+        height: "91vh",
+      }}
+    >
+      <Box
         sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: {
-            width: drawerWidth,
-            boxSizing: "border-box",
-          },
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          marginTop: "5vh",
+          width: "100%",
+          height: "50%",
+          border: "1px solid white",
+          background: "linear-gradient(to right, #03a9f4 , white)",
         }}
       >
-        <Toolbar />
-        <Box sx={{ overflow: "auto" }}>
-          <List>
-            {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-          <Divider />
-          <List>
-            {["All mail", "Trash", "Spam"].map((text, index) => (
-              <ListItem key={text} disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                  <ListItemText primary={text} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
+        <Box
+          sx={{
+            color: "white",
+            textAlign: "center",
+          }}
+        >
+          <Box>
+            <Typography
+              sx={{
+                fontSize: "40px",
+                fontWeight: "bold",
+                WebkitTextStroke: "1px #01579b",
+              }}
+            >
+              It's almost time...
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: "20px",
+                WebkitTextStroke: "1px #01579b",
+              }}
+            >
+              Get ready to take advantage of the deals.
+            </Typography>
+            <Button
+              sx={{ color: "white", marginTop: "2vh" }}
+              variant="outlined"
+            >
+              Outlined
+            </Button>
+          </Box>
         </Box>
-      </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Toolbar />
-        <Typography paragraph>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Rhoncus
-          dolor purus non enim praesent elementum facilisis leo vel. Risus at
-          ultrices mi tempus imperdiet. Semper risus in hendrerit gravida rutrum
-          quisque non tellus. Convallis convallis tellus id interdum velit
-          laoreet id donec ultrices. Odio morbi quis commodo odio aenean sed
-          adipiscing. Amet nisl suscipit adipiscing bibendum est ultricies
-          integer quis. Cursus euismod quis viverra nibh cras. Metus vulputate
-          eu scelerisque felis imperdiet proin fermentum leo. Mauris commodo
-          quis imperdiet massa tincidunt. Cras tincidunt lobortis feugiat
-          vivamus at augue. At augue eget arcu dictum varius duis at consectetur
-          lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa sapien
-          faucibus et molestie ac.
-        </Typography>
-        <Typography paragraph>
-          Consequat mauris nunc congue nisi vitae suscipit. Fringilla est
-          ullamcorper eget nulla facilisi etiam dignissim diam. Pulvinar
-          elementum integer enim neque volutpat ac tincidunt. Ornare suspendisse
-          sed nisi lacus sed viverra tellus. Purus sit amet volutpat consequat
-          mauris. Elementum eu facilisis sed odio morbi. Euismod lacinia at quis
-          risus sed vulputate odio. Morbi tincidunt ornare massa eget egestas
-          purus viverra accumsan in. In hendrerit gravida rutrum quisque non
-          tellus orci ac. Pellentesque nec nam aliquam sem et tortor. Habitant
-          morbi tristique senectus et. Adipiscing elit duis tristique
-          sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-          eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-          posuere sollicitudin aliquam ultrices sagittis orci a.
-        </Typography>
       </Box>
+      <Grid container sx={{ width: "100%" }}>
+        <Grid
+          display={"flex"}
+          justifyContent="center"
+          alignItems="center"
+          xs={6}
+          sm={6}
+          md={8}
+          lg={12}
+          item
+        >
+          {products.slice(0, 3).map((e) => {
+            if (e.isActive === false && userData.userName !== e.userName)
+              return null;
+            return (
+              <Card
+                sx={{
+                  width: "250px",
+                  height: "300px",
+                  border: "#03a9f4 2px solid",
+                  textAlign:"center",
+                  color:"#03a9f4"
+                }}
+                key={e.productsName}
+              >
+                <Paper sx={{display:"flex",justifyContent:"center",overflow:"hidden",height:"70%",width:"100%"}}>
+                  <img style={{size:"fill"}} alt={e.productsName} src={`${e.image}`}></img>
+                </Paper>
+                <Typography sx={{ mt:"10px" }}>
+                  {e.productsName}
+                </Typography>
+              </Card>
+            );
+          })}
+        </Grid>
+      </Grid>
     </Box>
   );
 };

@@ -32,9 +32,9 @@ const ProductsPage = () => {
       justifyContent="center"
       mb="5rem"
     >
-      <FilteringBar />
+      {userData && <FilteringBar />}
       <Products page={page} isLoading={isLoading} products={products} />
-      <Pagination onChange={handleChange} count={calcPageCount(numOfProducts)} page={page * 1 } />
+      {userData && <Pagination onChange={handleChange} count={calcPageCount(numOfProducts)} page={page * 1 } />}
       {isSeller && <AddProduct />}
     </Box>
   );

@@ -4,9 +4,11 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useState, Fragment } from "react";
 import useGetNameAndBrand from "../../Hooks/useGetNameAndBrand";
 import { useNavigate } from "react-router";
+import useGetUserData from "../../Hooks/useGetUserData";
 
 export default function SearchBar() {
   const navigate = useNavigate();
+  const userData = useGetUserData()
 
   const { productsNames, isLoading } = useGetNameAndBrand();
   const [open, setOpen] = useState(false);
@@ -65,7 +67,7 @@ export default function SearchBar() {
             ...params.InputProps,
             endAdornment: (
               <Fragment>
-                {isLoading ? (
+                {userData && isLoading ? (
                   <CircularProgress color="inherit" size={20} />
                 ) : null}
                 {params.InputProps.endAdornment}
