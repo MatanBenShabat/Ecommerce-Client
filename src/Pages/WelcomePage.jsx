@@ -1,117 +1,140 @@
-import { Typography, Box, Button, Card, Grid, Paper } from "@mui/material";
-
 import React from "react";
 import useGetUserData from "../Hooks/useGetUserData";
 import useGetHomeProducts from "../Hooks/useGetHomeProducts";
-import Loading from "../Loading"
+import { useNavigate } from "react-router-dom";
+import Loading from "../Loading";
+import { Typography, Box, Button, Card, Grid, Paper } from "@mui/material";
+import { blue } from "@mui/material/colors";
 
 const WelcomePage = () => {
   const { products, isLoading } = useGetHomeProducts();
   const userData = useGetUserData();
+  const navigate = useNavigate();
+
   return (
     <>
-      {isLoading && <Loading/>}
-      {!isLoading && <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          width: "100vw",
-          height: "91vh",
-        }}
-      >
+      {isLoading ? (
+        <Loading />
+      ) : (
         <Box
           sx={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
-            marginTop: "5vh",
-            width: "100%",
-            height: "50%",
-            border: "1px solid white",
-            background: "linear-gradient(to right, #03a9f4 , white)",
+            alignItems: "center",
+            width: "100vw",
+            height: "91vh",
           }}
         >
           <Box
             sx={{
-              color: "white",
-              textAlign: "center",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              marginTop: "5vh",
+              width: "100%",
+              height: "50%",
+              border: "1px solid white",
             }}
           >
-            <Box>
-              <Typography
+            <Box
+              sx={{
+                color: "white",
+                textAlign: "center",
+              }}
+            >
+              <Box
                 sx={{
-                  fontSize: "40px",
-                  fontWeight: "bold",
-                  WebkitTextStroke: "1px #01579b",
+                  transition: "all ease 2s",
+                  backgroundImage: `linear-gradient(to right, ${blue[50]} , ${blue[400]})`,
+                  backgroundClip: "text",
+                  color: "transparent",
                 }}
               >
-                It's almost time...
-              </Typography>
-              <Typography
-                sx={{
-                  fontSize: "20px",
-                  WebkitTextStroke: "1px #01579b",
-                }}
-              >
-                Get ready to take advantage of the deals.
-              </Typography>
-              <Button
-                sx={{ color: "white", marginTop: "2vh" }}
-                variant="outlined"
-              >
-                Outlined
-              </Button>
+                <Typography
+                  component={"h1"}
+                  sx={{
+                    fontSize: "40px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  It's almost time...
+                </Typography>
+                <Typography
+                  component={"h2"}
+                  sx={{
+                    fontSize: "20px",
+                  }}
+                >
+                  Get ready to take advantage of the deals.
+                </Typography>
+                <Button
+                  sx={{  marginTop: "2rem" }}
+                  variant="contained"
+                  onClick={() => {
+                    userData ? navigate('/products/1') : navigate('/login')
+                  }}
+                >
+                  {userData ? "Start bidding" : "Join HOA Today"}
+                </Button>
+              </Box>
             </Box>
           </Box>
-        </Box>
-        <Grid container sx={{ width: "100%" }}>
-          <Grid
-            display={"flex"}
-            justifyContent="center"
-            alignItems="center"
-            xs={6}
-            sm={6}
-            md={8}
-            lg={12}
-            item
-          >
-            {products.slice(0, 3).map((e) => {
-              if (e.isActive === false && userData.userName !== e.userName)
-                return null;
-              return (
-                <Card
-                  sx={{
-                    width: "250px",
-                    height: "300px",
-                    border: "#03a9f4 2px solid",
-                    textAlign: "center",
-                    color: "#03a9f4",
-                  }}
-                  key={e.productsName}
-                >
-                  <Paper
+          <Grid container sx={{ width: "100%", mt: 2 }}>
+            <Grid
+              display={"flex"}
+              flexDirection={{ xs: "column", md: "row" }}
+              justifyContent="center"
+              alignItems="center"
+              gap={"2vw"}
+              xs={12}
+              item
+            >
+              {products.slice(0, 3).map((e) => {
+                if (e.isActive === false && userData.userName !== e.userName)
+                  return null;
+                return (
+                  <Card
                     sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      overflow: "hidden",
-                      height: "70%",
-                      width: "100%",
+                      width: "250px",
+                      height: "300px",
+                      textAlign: "center",
+                      boxShadow: "none",
+                      cursor: "pointer",
+                      transition: "all ease 1s",
+                      "&:hover": {
+                        dropShadow: "1px 1px 1px black",
+                        transform: "scale(1.1)",
+                      },
+                      color: "#03a9f4",
                     }}
+                    key={e.productsName}
                   >
-                    <img
-                      style={{ size: "fill" }}
-                      alt={e.productsName}
-                      src={`${e.image}`}
-                    ></img>
-                  </Paper>
-                  <Typography sx={{ mt: "10px" }}>{e.productsName}</Typography>
-                </Card>
-              );
-            })}
+                    <Paper
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        overflow: "hidden",
+                        boxShadow: "none",
+                        height: "70%",
+                        width: "100%",
+                      }}
+                    >
+                      <img
+                        style={{ size: "fill" }}
+                        alt={e.productsName}
+                        src={`${e.image}`}
+                      ></img>
+                    </Paper>
+                    <Typography sx={{ mt: "10px" }}>
+                      {e.productsName}
+                    </Typography>
+                  </Card>
+                );
+              })}
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>}
+        </Box>
+      )}
     </>
   );
 };

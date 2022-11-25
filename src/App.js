@@ -58,6 +58,7 @@ function App() {
       <NavBar/>
       <Routes>
         <Route path="/*" element={<Navigate to="/" replace />} />
+        {!data && <Route path="/home" element={<WelcomePage />} />}
         {!data && <Route path="/" element={<SignIn />} />}
         {!data && (
           <Route

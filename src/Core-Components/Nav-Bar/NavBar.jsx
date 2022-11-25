@@ -23,10 +23,7 @@ import { useCallback } from "react";
 import { useMemo } from "react";
 import SearchBar from "./SearchBar";
 
-const pages = [
-  { name: "Home", link: "/" },
-  { name: "Products", link: "/products" },
-];
+
 
 const Navbar = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -34,6 +31,13 @@ const Navbar = () => {
   const userData = useGetUserData();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+
+  const pages = React.useMemo(()=>
+    [
+      { name: "Home", link: userData ? "/" : '/home' },
+      { name: "Products", link: "/products" },
+    ]
+  ,[userData])
 
   const handleLogout = useCallback(async () => {
     try {
