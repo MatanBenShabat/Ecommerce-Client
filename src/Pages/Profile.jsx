@@ -9,24 +9,37 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 import Loading from "../Loading";
 
 function Profile({ data }) {
+  const queryclient = useQueryClient();
   const [role, setRole] = React.useState("");
+  const [usertype, setUsertype] = React.useState(data.userType);
+  
 
   const handleChange = (event) => {
     setRole(event.target.value);
     changeRole(event.target.value);
   };
 
-
   const { mutate: changeRole, isLoading } = useMutation((role) => {
-    return axios.patch(`${process.env.REACT_APP_URL}/api-users/updateRole`, {
-      userType: role,
-    });
+    return axios
+      .patch(`${process.env.REACT_APP_URL}/api-users/updateRole`, {
+        userType: role,
+      })
+      .then((res) => {
+        data = res?.data?.data?.user;
+        setUsertype(data.userType)
+        queryclient.setQueryData("user-data", () => {
+          return {
+            data: { data: data},
+          };
+        });
+      });
   });
+
   return (
     <>
       {isLoading ? (
@@ -82,7 +95,7 @@ function Profile({ data }) {
               UserName: {data.username}
             </Typography>
             <Typography sx={{ color: "gray" }}>
-              UserType: {data.userType}
+              UserType: {usertype}
             </Typography>
           </Box>
         </Grid>
