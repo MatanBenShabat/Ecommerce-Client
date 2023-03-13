@@ -1,15 +1,36 @@
-import React from "react";
+import { useState, forwardRef } from "react";
 import Grid from "@mui/material/Grid";
 import { Box } from "@mui/system";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { Avatar, IconButton, Typography } from "@mui/material";
+import createDateStr from "../utils/createDateStr";
+
+import {
+  AppBar,
+  Avatar,
+  Dialog,
+  Divider,
+  IconButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Slide,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import { useMutation, useQueryClient } from "react-query";
 import axios from "axios";
 import Loading from "../Loading";
-import RadioButtonsGroup from "../Custom-Components/CustomChips";
-import InventoryIcon from '@mui/icons-material/Inventory';
-import ReviewsIcon from '@mui/icons-material/Reviews';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import RadioButtonsGroup from "../Custom-Components/CustomRadioButtons";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import ReviewsIcon from "@mui/icons-material/Reviews";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import useGetMyProducts from "../Hooks/useGetMyProducts";
+import CloseIcon from "@mui/icons-material/Close";
+
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 function Profile({ data }) {
   const styles = {
@@ -28,7 +49,7 @@ function Profile({ data }) {
       borderRadius: "5px",
       boxShadow: "0px 1px 3px 3px gray",
       display: "flex",
-      flexDirection: "column",  
+      flexDirection: "column",
     },
     avatar: {
       height: "13vh",
@@ -91,7 +112,7 @@ function Profile({ data }) {
       flexWrap: "wrap",
       // marginBottom: "3%",
       color: "white",
-      padding:"2%",
+      padding: "2%",
       ":hover": {
         color: "#2196f3",
       },
@@ -99,10 +120,19 @@ function Profile({ data }) {
   };
 
   const queryclient = useQueryClient();
-  const [usertype, setUsertype] = React.useState(data.userType);
+  const [usertype, setUsertype] = useState(data.userType);
+  const [openMyProducts, setOpenMyProducts] = useState(false);
+  const { products, loadingMyProducts } = useGetMyProducts(data.username);
 
   const handleClick = () => {
     changeRole(data.userType === "seller" ? "customer" : "seller");
+  };
+
+  const handleOpenMyProducts = () => {
+    setOpenMyProducts(true);
+  };
+  const handleCloseMyProducts = () => {
+    setOpenMyProducts(false);
   };
 
   const { mutate: changeRole, isLoading } = useMutation((role) => {
@@ -123,7 +153,7 @@ function Profile({ data }) {
 
   return (
     <>
-      {isLoading ? (
+      {isLoading && loadingMyProducts ? (
         <Loading />
       ) : (
         <Grid sx={styles.container}>
@@ -142,7 +172,11 @@ function Profile({ data }) {
               </Typography>
             </Box>
             <Box sx={styles.myProductsAndReviews}>
-              <IconButton sx={styles.my} variant="contained">
+              <IconButton
+                onClick={handleOpenMyProducts}
+                sx={styles.my}
+                variant="contained"
+              >
                 MY PRODUCTS
                 <InventoryIcon />
               </IconButton>
@@ -156,6 +190,57 @@ function Profile({ data }) {
               </IconButton>
             </Box>
           </Box>
+          <Dialog
+            fullScreen
+            open={openMyProducts}
+            onClose={handleCloseMyProducts}
+            TransitionComponent={Transition}
+          >
+            <AppBar sx={{ position: "relative" }}>
+              <Toolbar>
+                <IconButton
+                  edge="start"
+                  color="inherit"
+                  onClick={handleCloseMyProducts}
+                  aria-label="close"
+                >
+                  <CloseIcon />
+                </IconButton>
+                <Typography
+                  sx={{ ml: 2, flex: 1 }}
+                  variant="h6"
+                  component="div"
+                >
+                  My Products
+                </Typography>
+              </Toolbar>
+            </AppBar>
+            <List>
+              {products?.map((product, i) => {
+                return (
+                  // <Typography>{product}</Typography>
+                  <ListItem button>
+                    <ListItem>
+                      <ListItemAvatar>
+                        <Avatar src={`${product.image}`}></Avatar>
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={`${product.productsName}`}
+                        secondary={`$${product.price}`}
+                      />
+                    </ListItem>
+                    <Divider />
+                    <ListItem>
+                      <ListItemText
+                        primary={`Current Bidder: ${product.currentBidder}`}
+                        secondary={`Auction ends at: ${createDateStr(product.endOfAuctionDate)}`}
+                      />
+                    </ListItem>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </Dialog>
         </Grid>
       )}
     </>
